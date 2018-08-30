@@ -10,9 +10,12 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 include_directories(include)
 
 set(HEADERS
+    include/gadget++/button.hpp
+    include/gadget++/types.hpp
     include/gadget++/call_chain.hpp
 )
 set(SOURCES
+    lib/button.cpp
 )
 
 add_definitions(-DASIO_STANDALONE)
