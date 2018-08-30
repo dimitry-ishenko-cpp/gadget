@@ -10,6 +10,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 include_directories(include)
 
 set(HEADERS
+    include/gadget++/call_chain.hpp
 )
 set(SOURCES
 )
