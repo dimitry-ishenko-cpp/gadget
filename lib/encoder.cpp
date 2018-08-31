@@ -14,9 +14,9 @@ namespace gadget
 
 ////////////////////////////////////////////////////////////////////////////////
 encoder::encoder(asio::io_service&, gpio::pin* pin1, gpio::pin* pin2) :
-    pin1_(pin1), pin2_(pin2)
+    pin_(pin1), pin2_(pin2)
 {
-    pin1_->on_state_changed([=](gpio::state gs)
+    pin_->on_state_changed([=](gpio::state gs)
     {
         if(gs != state_)
         {

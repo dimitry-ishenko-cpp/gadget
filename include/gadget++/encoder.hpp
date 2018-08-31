@@ -29,9 +29,6 @@ public:
     ////////////////////
     encoder(asio::io_service&, gpio::pin*, gpio::pin*);
 
-    encoder(const encoder&) = delete;
-    encoder& operator=(const encoder&) = delete;
-
     ////////////////////
     using rotated = std::function<void(encoder_direction)>;
     using rotated_cw = std::function<void()>;
@@ -43,7 +40,7 @@ public:
 
 protected:
     ////////////////////
-    gpio::pin* pin1_ = nullptr;
+    gpio::pin* pin_= nullptr;
     gpio::pin* pin2_ = nullptr;
 
     gpio::state state_ = gpio::off;
