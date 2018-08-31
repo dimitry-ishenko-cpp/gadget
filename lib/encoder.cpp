@@ -41,16 +41,16 @@ void encoder::on_rotated(encoder::rotated fn)
 ////////////////////////////////////////////////////////////////////////////////
 void encoder::on_rotated_cw(encoder::rotated_cw fn)
 {
-    on_rotated([fn_ = std::move(fn)](encoder_direction dir)
-        { if(dir == gadget::cw) fn_(); }
+    on_rotated([fn_ = std::move(fn)](encoder_direction step)
+        { if(step == gadget::cw) fn_(); }
     );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void encoder::on_rotated_ccw(encoder::rotated_ccw fn)
 {
-    on_rotated([fn_ = std::move(fn)](encoder_direction dir)
-        { if(dir == gadget::ccw) fn_(); }
+    on_rotated([fn_ = std::move(fn)](encoder_direction step)
+        { if(step == gadget::ccw) fn_(); }
     );
 }
 
