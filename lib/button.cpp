@@ -16,10 +16,10 @@ namespace gadget
 button::button(asio::io_service& io, gpio::pin* pin) :
     pin_(pin), state_(state_from_gpio(pin->state())), timer_(io)
 {
-    pin_->on_state_changed([&](gpio::state gs)
+    pin_->on_state_changed([=](gpio::state gs)
     {
         timer_.expires_from_now(time_);
-        timer_.async_wait([&](const asio::error_code& ec)
+        timer_.async_wait([=](const asio::error_code& ec)
         {
             if(ec) return;
 
