@@ -6,6 +6,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 #include <gadget++/button.hpp>
+#include <utility>
 
 ////////////////////////////////////////////////////////////////////////////////
 namespace gadget
@@ -23,7 +24,11 @@ button::button(asio::io_context& io, gpio::pin* pin) :
             if(ec) return;
 
             auto state = state_from_gpio(gs);
-            if(state != state_) state_changed_.call(state_ = state);
+            if(state != state_)
+            {
+                state_ = state;
+                state_changed_.call(state_);
+            }
         });
     });
 }

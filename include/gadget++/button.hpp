@@ -17,7 +17,6 @@
 #include <asio/system_timer.hpp>
 #include <chrono>
 #include <functional>
-#include <utility>
 
 ////////////////////////////////////////////////////////////////////////////////
 namespace gadget
@@ -41,10 +40,10 @@ public:
     gadget::state state() { return state_from_gpio(pin_->state()); }
 
     void press() { set(gadget::pressed); }
-    bool pressed() { return state() == gadget::pressed; }
+    bool is_pressed() { return state() == gadget::pressed; }
 
     void release() { set(gadget::released); }
-    bool released() { return state() == gadget::released; }
+    bool is_released() { return state() == gadget::released; }
 
     template<typename Rep, typename Period>
     void debounce_time(std::chrono::duration<Rep, Period> time)
@@ -56,9 +55,9 @@ public:
     using state_pressed = std::function<void()>;
     using state_released = std::function<void()>;
 
-    void on_state_changed(state_changed fn);
-    void on_pressed(state_pressed fn);
-    void on_released(state_released fn);
+    void on_state_changed(state_changed);
+    void on_pressed(state_pressed);
+    void on_released(state_released);
 
 protected:
     ////////////////////
