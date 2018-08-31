@@ -21,6 +21,12 @@ template<typename Fn>
 struct call_chain
 {
     ////////////////////
+    call_chain() noexcept = default;
+
+    call_chain(const call_chain&) = delete;
+    call_chain& operator=(const call_chain&) = delete;
+
+    ////////////////////
     void add(Fn fn) { chain_.push_back(std::move(fn)); }
 
     template<typename... Args>
