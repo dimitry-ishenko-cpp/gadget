@@ -42,7 +42,7 @@ void button::on_state_changed(button::state_changed fn)
 ////////////////////////////////////////////////////////////////////////////////
 void button::on_pressed(button::state_pressed fn)
 {
-    on_state_changed([fn_ = std::move(fn)](gadget::state state)
+    on_state_changed([fn_ = std::move(fn)](button_state state)
         { if(state == gadget::pressed) fn_(); }
     );
 }
@@ -50,7 +50,7 @@ void button::on_pressed(button::state_pressed fn)
 ////////////////////////////////////////////////////////////////////////////////
 void button::on_released(button::state_released fn)
 {
-    on_state_changed([fn_ = std::move(fn)](gadget::state state)
+    on_state_changed([fn_ = std::move(fn)](button_state state)
         { if(state == gadget::released) fn_(); }
     );
 }
