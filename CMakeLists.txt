@@ -11,11 +11,13 @@ include_directories(include)
 
 set(HEADERS
     include/gadget++/button.hpp
+    include/gadget++/encoder.hpp
     include/gadget++/types.hpp
     include/gadget++/call_chain.hpp
 )
 set(SOURCES
     lib/button.cpp
+    lib/encoder.cpp
 )
 
 add_definitions(-DASIO_STANDALONE)
