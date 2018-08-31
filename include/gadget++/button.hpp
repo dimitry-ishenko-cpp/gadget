@@ -32,9 +32,6 @@ public:
     ////////////////////
     button(asio::io_service&, gpio::pin*);
 
-    button(const button&) = delete;
-    button& operator=(const button&) = delete;
-
     ////////////////////
     void set(button_state state) { pin_->set(state_to_gpio(state)); }
     auto state() { return state_from_gpio(pin_->state()); }
