@@ -13,7 +13,7 @@
 #include <gadget++/types.hpp>
 #include <gpio++/pin.hpp>
 
-#include <asio/io_context.hpp>
+#include <asio/io_service.hpp>
 #include <asio/system_timer.hpp>
 #include <chrono>
 #include <functional>
@@ -30,7 +30,7 @@ class button
 {
 public:
     ////////////////////
-    button(asio::io_context&, gpio::pin*);
+    button(asio::io_service&, gpio::pin*);
 
     button(const button&) = delete;
     button& operator=(const button&) = delete;

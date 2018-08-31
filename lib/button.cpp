@@ -13,7 +13,7 @@ namespace gadget
 {
 
 ////////////////////////////////////////////////////////////////////////////////
-button::button(asio::io_context& io, gpio::pin* pin) :
+button::button(asio::io_service& io, gpio::pin* pin) :
     pin_(pin), state_(state_from_gpio(pin->state())), timer_(io)
 {
     pin_->on_state_changed([&](gpio::state gs)
