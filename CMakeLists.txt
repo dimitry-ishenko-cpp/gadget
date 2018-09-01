@@ -11,9 +11,10 @@ include_directories(include)
 
 set(HEADERS
     include/gadget++/button.hpp
-    include/gadget++/encoder.hpp
-    include/gadget++/types.hpp
     include/gadget++/call_chain.hpp
+    include/gadget++/encoder.hpp
+    include/gadget++/led.hpp
+    include/gadget++/types.hpp
 )
 set(SOURCES
     lib/button.cpp
