@@ -13,8 +13,8 @@ namespace gadget
 {
 
 ////////////////////////////////////////////////////////////////////////////////
-encoder::encoder(asio::io_service&, gpio::pin* pin1, gpio::pin* pin2) :
-    pin_(pin1), pin2_(pin2)
+encoder::encoder(asio::io_service&, gpio::pin* pin, gpio::pin* pin2) :
+    pin_(pin), pin2_(pin2)
 {
     pin_->on_state_changed([=](gpio::state gs)
     {
@@ -22,12 +22,12 @@ encoder::encoder(asio::io_service&, gpio::pin* pin1, gpio::pin* pin2) :
         {
             if((state_ = gs))
             {
-                auto step = pin2_->state() ? gadget::cw : gadget::ccw;
+                auto step = pin2_->state() ? cw : ccw;
                 if(step == step_) rotated_.call(step);
 
                 step_ = none;
             }
-            else step_ = pin2_->state() ? gadget::ccw : gadget::cw;
+            else step_ = pin2_->state() ? ccw : cw;
         }
     });
 }
@@ -41,16 +41,16 @@ void encoder::on_rotated(encoder::rotated fn)
 ////////////////////////////////////////////////////////////////////////////////
 void encoder::on_rotated_cw(encoder::rotated_cw fn)
 {
-    on_rotated([fn_ = std::move(fn)](encoder_direction step)
-        { if(step == gadget::cw) fn_(); }
+    on_rotated([fn_ = std::move(fn)](encoder_step step)
+        { if(step == cw) fn_(); }
     );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void encoder::on_rotated_ccw(encoder::rotated_ccw fn)
 {
-    on_rotated([fn_ = std::move(fn)](encoder_direction step)
-        { if(step == gadget::ccw) fn_(); }
+    on_rotated([fn_ = std::move(fn)](encoder_step step)
+        { if(step == ccw) fn_(); }
     );
 }
 

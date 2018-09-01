@@ -10,6 +10,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 #include <gadget++/call_chain.hpp>
+#include <gadget++/types.hpp>
 #include <gpio++/pin.hpp>
 
 #include <asio/io_service.hpp>
@@ -20,9 +21,6 @@ namespace gadget
 {
 
 ////////////////////////////////////////////////////////////////////////////////
-enum encoder_direction { ccw = -1, cw = 1 };
-
-////////////////////////////////////////////////////////////////////////////////
 class encoder
 {
 public:
@@ -30,7 +28,7 @@ public:
     encoder(asio::io_service&, gpio::pin*, gpio::pin*);
 
     ////////////////////
-    using rotated = std::function<void(encoder_direction)>;
+    using rotated = std::function<void(encoder_step)>;
     using rotated_cw = std::function<void()>;
     using rotated_ccw = std::function<void()>;
 
@@ -43,10 +41,10 @@ protected:
     gpio::pin* pin_= nullptr;
     gpio::pin* pin2_ = nullptr;
 
-    gpio::state state_ = gpio::off;
+    gpio::state state_ = off;
 
-    static constexpr auto none = static_cast<encoder_direction>(0);
-    encoder_direction step_ = none;
+    static constexpr auto none = static_cast<encoder_step>(0);
+    encoder_step step_ = none;
 
     call_chain<rotated> rotated_;
 };
