@@ -23,9 +23,6 @@ namespace gadget
 {
 
 ////////////////////////////////////////////////////////////////////////////////
-enum button_state { pressed, released };
-
-////////////////////////////////////////////////////////////////////////////////
 class button
 {
 public:
@@ -36,15 +33,15 @@ public:
     void set(button_state state) { pin_->set(state_to_gpio(state)); }
     auto state() { return state_from_gpio(pin_->state()); }
 
-    void press() { set(gadget::pressed); }
-    bool is_pressed() { return state() == gadget::pressed; }
+    void press() { set(pressed); }
+    bool is_pressed() { return state() == pressed; }
 
-    void release() { set(gadget::released); }
-    bool is_released() { return state() == gadget::released; }
+    void release() { set(released); }
+    bool is_released() { return state() == released; }
 
     template<typename Rep, typename Period>
     void debounce_time(std::chrono::duration<Rep, Period> time)
-    { time_ = std::chrono::duration_cast<gadget::nsec>(time); }
+    { time_ = std::chrono::duration_cast<nsec>(time); }
     auto debounce_time() const noexcept { return time_; }
 
     ////////////////////
@@ -61,17 +58,17 @@ protected:
     gpio::pin* pin_ = nullptr;
     button_state state_;
 
-    gadget::nsec time_ { 10'000'000 };
+    nsec time_ { 10'000'000 };
     asio::system_timer timer_;
 
     call_chain<state_changed> state_changed_;
 
     ////////////////////
     inline button_state state_from_gpio(gpio::state state)
-    { return state == gpio::off ? gadget::pressed : gadget::released; }
+    { return state == off ? pressed : released; }
 
     inline gpio::state state_to_gpio(button_state state)
-    { return state == gadget::pressed ? gpio::off : gpio::on; }
+    { return state == pressed ? off : on; }
 };
 
 ////////////////////////////////////////////////////////////////////////////////
