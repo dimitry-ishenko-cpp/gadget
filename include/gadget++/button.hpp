@@ -9,7 +9,6 @@
 #define GADGET_BUTTON_HPP
 
 ////////////////////////////////////////////////////////////////////////////////
-#include <gadget++/call_chain.hpp>
 #include <gadget++/types.hpp>
 #include <gpio++/pin.hpp>
 
@@ -21,6 +20,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 namespace gadget
 {
+
+////////////////////////////////////////////////////////////////////////////////
+enum button_state { pressed, released };
 
 ////////////////////////////////////////////////////////////////////////////////
 class button
@@ -49,9 +51,11 @@ public:
     using state_pressed = std::function<void()>;
     using state_released = std::function<void()>;
 
-    void on_state_changed(state_changed);
-    void on_pressed(state_pressed);
-    void on_released(state_released);
+    cid on_state_changed(state_changed);
+    cid on_pressed(state_pressed);
+    cid on_released(state_released);
+
+    bool remove_call(cid);
 
 protected:
     ////////////////////

@@ -27,33 +27,38 @@ button::button(asio::io_service& io, gpio::pin* pin) :
             if(state != state_)
             {
                 state_ = state;
-                state_changed_.call(state_);
+                state_changed_(state_);
             }
         });
     });
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void button::on_state_changed(button::state_changed fn)
+cid button::on_state_changed(button::state_changed fn)
 {
-    state_changed_.add(std::move(fn));
+    return state_changed_.add(std::move(fn));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void button::on_pressed(button::state_pressed fn)
+cid button::on_pressed(button::state_pressed fn)
 {
-    on_state_changed([fn_ = std::move(fn)](button_state state)
+    return on_state_changed(
+        [fn_ = std::move(fn)](button_state state)
         { if(state == pressed) fn_(); }
     );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void button::on_released(button::state_released fn)
+cid button::on_released(button::state_released fn)
 {
-    on_state_changed([fn_ = std::move(fn)](button_state state)
+    return on_state_changed(
+        [fn_ = std::move(fn)](button_state state)
         { if(state == released) fn_(); }
     );
 }
+
+////////////////////////////////////////////////////////////////////////////////
+bool button::remove_call(cid id) { return state_changed_.remove(id); }
 
 ////////////////////////////////////////////////////////////////////////////////
 }

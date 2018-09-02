@@ -9,7 +9,6 @@
 #define GADGET_ENCODER_HPP
 
 ////////////////////////////////////////////////////////////////////////////////
-#include <gadget++/call_chain.hpp>
 #include <gadget++/types.hpp>
 #include <gpio++/pin.hpp>
 
@@ -32,9 +31,11 @@ public:
     using rotated_cw = std::function<void()>;
     using rotated_ccw = std::function<void()>;
 
-    void on_rotated(rotated);
-    void on_rotated_cw(rotated_cw);
-    void on_rotated_ccw(rotated_ccw);
+    cid on_rotated(rotated);
+    cid on_rotated_cw(rotated_cw);
+    cid on_rotated_ccw(rotated_ccw);
+
+    bool remove_call(cid);
 
 protected:
     ////////////////////
