@@ -32,7 +32,7 @@ public:
     contact(asio::io_service&, gpio::pin*);
 
     ////////////////////
-    auto state() { return from_gpio(pin_->state()); }
+    auto state() { return to_contact_state(pin_->state()); }
 
     bool is_pressed() { return state() == pressed; }
     bool is_released() { return state() == released; }
@@ -66,7 +66,7 @@ protected:
     void register_callback();
 
     ////////////////////
-    static contact_state from_gpio(gpio::state gs)
+    static contact_state to_contact_state(gpio::state gs)
     { return gs == gpio::off ? pressed : released; }
 };
 
