@@ -14,22 +14,9 @@ namespace gadget
 
 ////////////////////////////////////////////////////////////////////////////////
 encoder::encoder(asio::io_service&, gpio::pin* pin, gpio::pin* pin2) :
-    pin_(pin), pin2_(pin2)
+    gadget_base(pin), pin2_(pin2)
 {
-    pin_->on_state_changed([=](gpio::state gs)
-    {
-        if(gs != state_)
-        {
-            if((state_ = gs))
-            {
-                auto step = pin2_->state() ? cw : ccw;
-                if(step == step_) rotated_(step);
-
-                step_ = none;
-            }
-            else step_ = pin2_->state() ? ccw : cw;
-        }
-    });
+    register_callback();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -58,6 +45,25 @@ cid encoder::on_rotated_ccw(encoder::rotated_ccw fn)
 
 ////////////////////////////////////////////////////////////////////////////////
 bool encoder::remove_call(cid id) { return rotated_.remove(id); }
+
+////////////////////////////////////////////////////////////////////////////////
+void encoder::register_callback()
+{
+    reset(pin_->on_state_changed([=](gpio::state gs)
+    {
+        if(gs != state_)
+        {
+            if((state_ = gs))
+            {
+                auto step = pin2_->state() ? cw : ccw;
+                if(step == step_) rotated_(step);
+
+                step_ = none;
+            }
+            else step_ = pin2_->state() ? ccw : cw;
+        }
+    }));
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 }

@@ -9,6 +9,8 @@
 #define GADGET_ENCODER_HPP
 
 ////////////////////////////////////////////////////////////////////////////////
+#include <gadget++/gadget_base.hpp>
+#include <gadget++/ptr.hpp>
 #include <gadget++/types.hpp>
 #include <gpio++/pin.hpp>
 
@@ -20,7 +22,10 @@ namespace gadget
 {
 
 ////////////////////////////////////////////////////////////////////////////////
-class encoder
+enum encoder_step { ccw = -1, cw = 1 };
+
+////////////////////////////////////////////////////////////////////////////////
+class encoder : public gadget_base
 {
 public:
     ////////////////////
@@ -39,15 +44,14 @@ public:
 
 protected:
     ////////////////////
-    gpio::pin* pin_= nullptr;
-    gpio::pin* pin2_ = nullptr;
-
-    gpio::state state_ = off;
+    ptr<gpio::pin> pin2_;
+    gpio::state state_ = gpio::off;
 
     static constexpr auto none = static_cast<encoder_step>(0);
     encoder_step step_ = none;
 
     call_chain<rotated> rotated_;
+    void register_callback();
 };
 
 ////////////////////////////////////////////////////////////////////////////////
