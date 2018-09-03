@@ -13,6 +13,7 @@ set(HEADERS
     include/gadget++/contact.hpp
     include/gadget++/encoder.hpp
     include/gadget++/led.hpp
+    include/gadget++/ptr.hpp
     include/gadget++/types.hpp
 )
 set(SOURCES
