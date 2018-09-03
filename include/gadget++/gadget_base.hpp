@@ -22,7 +22,9 @@ class gadget_base
 {
 public:
     ////////////////////
-    gadget_base(gpio::pin* pin) : pin_(pin) { }
+    gadget_base() noexcept = default;
+
+    explicit gadget_base(gpio::pin* pin) : pin_(pin) { }
     virtual ~gadget_base();
 
     gadget_base(const gadget_base&) = delete;
