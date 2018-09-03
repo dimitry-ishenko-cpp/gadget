@@ -9,8 +9,8 @@
 #define GADGET_CONTACT_HPP
 
 ////////////////////////////////////////////////////////////////////////////////
+#include <gadget++/gadget_base.hpp>
 #include <gadget++/types.hpp>
-#include <gpio++/pin.hpp>
 
 #include <asio/io_service.hpp>
 #include <asio/system_timer.hpp>
@@ -25,7 +25,7 @@ namespace gadget
 enum contact_state { pressed, released };
 
 ////////////////////////////////////////////////////////////////////////////////
-class contact
+class contact : public gadget_base
 {
 public:
     ////////////////////
@@ -57,16 +57,17 @@ public:
 
 protected:
     ////////////////////
-    gpio::pin* pin_ = nullptr;
     contact_state state_;
 
     nsec time_ { 10'000'000 };
     asio::system_timer timer_;
 
     call_chain<state_changed> state_changed_;
+    void register_callback();
 
     ////////////////////
-    static contact_state from_gpio(gpio::state gs) { return gs == off ? pressed : released; }
+    static contact_state from_gpio(gpio::state gs)
+    { return gs == gpio::off ? pressed : released; }
 };
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -14,23 +14,9 @@ namespace gadget
 
 ////////////////////////////////////////////////////////////////////////////////
 contact::contact(asio::io_service& io, gpio::pin* pin) :
-    pin_(pin), state_(from_gpio(pin->state())), timer_(io)
+    gadget_base(pin), state_(from_gpio(pin->state())), timer_(io)
 {
-    pin_->on_state_changed([=](gpio::state gs)
-    {
-        timer_.expires_from_now(time_);
-        timer_.async_wait([=](const asio::error_code& ec)
-        {
-            if(ec) return;
-
-            auto state = from_gpio(gs);
-            if(state != state_)
-            {
-                state_ = state;
-                state_changed_(state_);
-            }
-        });
-    });
+    register_callback();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -59,6 +45,26 @@ cid contact::on_released(contact::state_released fn)
 
 ////////////////////////////////////////////////////////////////////////////////
 bool contact::remove_call(cid id) { return state_changed_.remove(id); }
+
+////////////////////////////////////////////////////////////////////////////////
+void contact::register_callback()
+{
+    reset(pin_->on_state_changed([=](gpio::state gs)
+    {
+        timer_.expires_from_now(time_);
+        timer_.async_wait([=](const asio::error_code& ec)
+        {
+            if(ec) return;
+
+            auto state = from_gpio(gs);
+            if(state != state_)
+            {
+                state_ = state;
+                state_changed_(state_);
+            }
+        });
+    }));
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 }
