@@ -5,7 +5,7 @@
 // Distributed under the GNU GPL license. See the LICENSE.md file for details.
 
 ////////////////////////////////////////////////////////////////////////////////
-#include <gadget++/button.hpp>
+#include <gadget++/contact.hpp>
 #include <utility>
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -13,8 +13,8 @@ namespace gadget
 {
 
 ////////////////////////////////////////////////////////////////////////////////
-button::button(asio::io_service& io, gpio::pin* pin) :
-    pin_(pin), state_(state_from_gpio(pin->state())), timer_(io)
+contact::contact(asio::io_service& io, gpio::pin* pin) :
+    pin_(pin), state_(from_gpio(pin->state())), timer_(io)
 {
     pin_->on_state_changed([=](gpio::state gs)
     {
@@ -23,7 +23,7 @@ button::button(asio::io_service& io, gpio::pin* pin) :
         {
             if(ec) return;
 
-            auto state = state_from_gpio(gs);
+            auto state = from_gpio(gs);
             if(state != state_)
             {
                 state_ = state;
@@ -34,31 +34,31 @@ button::button(asio::io_service& io, gpio::pin* pin) :
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-cid button::on_state_changed(button::state_changed fn)
+cid contact::on_state_changed(contact::state_changed fn)
 {
     return state_changed_.add(std::move(fn));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-cid button::on_pressed(button::state_pressed fn)
+cid contact::on_pressed(contact::state_pressed fn)
 {
     return on_state_changed(
-        [fn_ = std::move(fn)](button_state state)
+        [fn_ = std::move(fn)](contact_state state)
         { if(state == pressed) fn_(); }
     );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-cid button::on_released(button::state_released fn)
+cid contact::on_released(contact::state_released fn)
 {
     return on_state_changed(
-        [fn_ = std::move(fn)](button_state state)
+        [fn_ = std::move(fn)](contact_state state)
         { if(state == released) fn_(); }
     );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool button::remove_call(cid id) { return state_changed_.remove(id); }
+bool contact::remove_call(cid id) { return state_changed_.remove(id); }
 
 ////////////////////////////////////////////////////////////////////////////////
 }

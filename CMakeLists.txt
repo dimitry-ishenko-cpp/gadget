@@ -10,13 +10,13 @@ add_definitions(-DASIO_STANDALONE)
 include_directories(include)
 
 set(HEADERS
-    include/gadget++/button.hpp
+    include/gadget++/contact.hpp
     include/gadget++/encoder.hpp
     include/gadget++/led.hpp
     include/gadget++/types.hpp
 )
 set(SOURCES
-    lib/button.cpp
+    lib/contact.cpp
     lib/encoder.cpp
 )
 set(FILES LICENSE.md README.md)
