@@ -9,8 +9,8 @@
 #define GADGET_LED_HPP
 
 ////////////////////////////////////////////////////////////////////////////////
+#include <gadget++/gadget_base.hpp>
 #include <gadget++/types.hpp>
-#include <gpio++/pin.hpp>
 
 #include <asio/io_service.hpp>
 
@@ -19,17 +19,14 @@ namespace gadget
 {
 
 ////////////////////////////////////////////////////////////////////////////////
-class led
+class led : public gadget_base
 {
 public:
     ////////////////////
-    led(asio::io_service&, gpio::pin* pin) : pin_(pin) { }
-
-    led(const led&) = delete;
-    led& operator=(const led&) = delete;
+    led(asio::io_service&, gpio::pin* pin) : gadget_base(pin) { }
 
     ////////////////////
-    bool is_dimmable() const noexcept { return pin_->mode() == gpio::pwm; }
+    bool is_dimmable() const noexcept;
 
     void turn(gadget::state state) { pin_->set(state); }
     gadget::state state() { return pin_->state(); }
@@ -37,12 +34,8 @@ public:
     void on() { turn(gadget::on); }
     void off() { turn(gadget::off); }
 
-    void set(percent pc) { pin_->set(pc); }
+    void dim(percent pc) { pin_->duty_cycle(pc); }
     percent level() const noexcept { return pin_->duty_cycle(); }
-
-protected:
-    ////////////////////
-    gpio::pin* pin_ = nullptr;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
