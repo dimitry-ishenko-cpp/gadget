@@ -12,6 +12,7 @@ include_directories(include)
 set(HEADERS
     include/gadget++/contact.hpp
     include/gadget++/encoder.hpp
+    include/gadget++/gadget_base.hpp
     include/gadget++/led.hpp
     include/gadget++/ptr.hpp
     include/gadget++/types.hpp
@@ -19,6 +20,7 @@ set(HEADERS
 set(SOURCES
     lib/contact.cpp
     lib/encoder.cpp
+    lib/gadget_base.cpp
 )
 set(FILES LICENSE.md README.md)
 
