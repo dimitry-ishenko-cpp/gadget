@@ -23,7 +23,7 @@ class led : public gadget_base
 {
 public:
     ////////////////////
-    led(asio::io_service&, gpio::pin* pin) : gadget_base(pin) { }
+    led(asio::io_service&, gpio::pin*);
 
     ////////////////////
     bool is_dimmable() const noexcept;
