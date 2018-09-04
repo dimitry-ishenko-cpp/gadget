@@ -49,7 +49,7 @@ bool contact::remove_call(cid id) { return state_changed_.remove(id); }
 ////////////////////////////////////////////////////////////////////////////////
 void contact::register_callback()
 {
-    reset(pin_->on_state_changed([=](gpio::state state)
+    reset_callback(pin_->on_state_changed([=](gpio::state state)
     {
         timer_.expires_from_now(time_);
         timer_.async_wait([=](const asio::error_code& ec)

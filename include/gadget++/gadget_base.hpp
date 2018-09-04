@@ -40,7 +40,7 @@ protected:
     static constexpr gpio::cid none { -1, -1 };
     gpio::cid id_ = none;
 
-    void reset(gpio::cid = none);
+    void reset_callback(gpio::cid = none);
 };
 
 ////////////////////////////////////////////////////////////////////////////////

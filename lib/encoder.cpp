@@ -49,7 +49,7 @@ bool encoder::remove_call(cid id) { return rotated_.remove(id); }
 ////////////////////////////////////////////////////////////////////////////////
 void encoder::register_callback()
 {
-    reset(pin_->on_state_changed([=](gpio::state gs)
+    reset_callback(pin_->on_state_changed([=](gpio::state gs)
     {
         if(gs != state_)
         {
