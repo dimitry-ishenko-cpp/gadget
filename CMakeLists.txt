@@ -21,6 +21,7 @@ set(SOURCES
     lib/contact.cpp
     lib/encoder.cpp
     lib/gadget_base.cpp
+    lib/led.cpp
 )
 set(FILES LICENSE.md README.md)
 
