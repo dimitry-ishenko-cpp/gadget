@@ -9,7 +9,6 @@
 #define GADGET_GADGET_BASE_HPP
 
 ////////////////////////////////////////////////////////////////////////////////
-#include <gadget++/ptr.hpp>
 #include <gpio++/pin.hpp>
 #include <gpio++/types.hpp>
 
@@ -22,8 +21,6 @@ class gadget_base
 {
 public:
     ////////////////////
-    gadget_base() noexcept = default;
-
     explicit gadget_base(gpio::pin* pin) : pin_(pin) { }
     virtual ~gadget_base();
 
@@ -35,7 +32,7 @@ public:
 
 protected:
     ////////////////////
-    ptr<gpio::pin> pin_;
+    gpio::pin* pin_ = nullptr;
 
     static constexpr gpio::cid none { -1, -1 };
     gpio::cid id_ = none;
