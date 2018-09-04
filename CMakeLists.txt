@@ -14,7 +14,6 @@ set(HEADERS
     include/gadget++/encoder.hpp
     include/gadget++/gadget_base.hpp
     include/gadget++/led.hpp
-    include/gadget++/ptr.hpp
     include/gadget++/types.hpp
 )
 set(SOURCES
