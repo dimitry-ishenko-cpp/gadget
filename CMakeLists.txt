@@ -14,6 +14,7 @@ set(HEADERS
     include/gadget++/encoder.hpp
     include/gadget++/gadget_base.hpp
     include/gadget++/led.hpp
+    include/gadget++/rgb_led.hpp
     include/gadget++/types.hpp
 )
 set(SOURCES
@@ -21,6 +22,7 @@ set(SOURCES
     lib/encoder.cpp
     lib/gadget_base.cpp
     lib/led.cpp
+    lib/rgb_led.cpp
 )
 set(FILES LICENSE.md README.md)
 
