@@ -10,7 +10,6 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 #include <gadget++/gadget_base.hpp>
-#include <gadget++/ptr.hpp>
 #include <gadget++/types.hpp>
 #include <gpio++/pin.hpp>
 
@@ -44,7 +43,7 @@ public:
 
 protected:
     ////////////////////
-    ptr<gpio::pin> pin2_;
+    gpio::pin* pin2_ = nullptr;
     gpio::state state_ = gpio::off;
 
     static constexpr auto none = static_cast<encoder_step>(0);
