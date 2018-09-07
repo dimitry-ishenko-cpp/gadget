@@ -26,14 +26,14 @@ public:
     led(asio::io_service&, gpio::pin*);
 
     ////////////////////
-    void turn(gadget::state state) { pin_->set(state); }
-    gadget::state state() { return pin_->state(); }
+    void turn(state s) { pin_->set(s); }
+    auto state() { return pin_->state(); }
 
     void on() { turn(gadget::on); }
     void off() { turn(gadget::off); }
 
     void dim(percent pc) { pin_->duty_cycle(pc); }
-    percent level() const noexcept { return pin_->duty_cycle(); }
+    auto level() const noexcept { return pin_->duty_cycle(); }
 };
 
 ////////////////////////////////////////////////////////////////////////////////
