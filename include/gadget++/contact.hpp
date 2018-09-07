@@ -22,9 +22,6 @@ namespace gadget
 {
 
 ////////////////////////////////////////////////////////////////////////////////
-enum contact_state { pressed, released };
-
-////////////////////////////////////////////////////////////////////////////////
 class contact : public gadget_base
 {
 public:
@@ -38,10 +35,7 @@ public:
     bool is_released() { return state() == released; }
 
     template<typename Rep, typename Period>
-    void debounce_time(std::chrono::duration<Rep, Period> time)
-    {
-        time_ = std::chrono::duration_cast<nsec>(time);
-    }
+    void debounce_time(std::chrono::duration<Rep, Period>);
     auto debounce_time() const noexcept { return time_; }
 
     ////////////////////
@@ -63,12 +57,18 @@ protected:
     asio::system_timer timer_;
 
     call_chain<state_changed> state_changed_;
-    void register_callback();
 
     ////////////////////
-    static contact_state to_contact_state(gpio::state gs)
-    { return gs == gpio::off ? pressed : released; }
+    static contact_state to_contact_state(gpio::state state)
+    { return state == off ? pressed : released; }
 };
+
+////////////////////////////////////////////////////////////////////////////////
+template<typename Rep, typename Period>
+void contact::debounce_time(std::chrono::duration<Rep, Period> time)
+{
+    time_ = std::chrono::duration_cast<nsec>(time);
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 }
