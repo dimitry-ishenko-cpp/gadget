@@ -26,8 +26,6 @@ public:
     led(asio::io_service&, gpio::pin*);
 
     ////////////////////
-    bool is_dimmable() const noexcept;
-
     void turn(gadget::state state) { pin_->set(state); }
     gadget::state state() { return pin_->state(); }
 
