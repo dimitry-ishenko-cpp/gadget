@@ -21,9 +21,6 @@ namespace gadget
 {
 
 ////////////////////////////////////////////////////////////////////////////////
-enum encoder_step { ccw = -1, cw = 1 };
-
-////////////////////////////////////////////////////////////////////////////////
 class encoder : public gadget_base
 {
 public:
@@ -44,13 +41,12 @@ public:
 protected:
     ////////////////////
     gpio::pin* pin2_ = nullptr;
-    gpio::state state_ = gpio::off;
+    gpio::state state_ = off;
 
     static constexpr auto none = static_cast<encoder_step>(0);
     encoder_step step_ = none;
 
     call_chain<rotated> rotated_;
-    void register_callback();
 };
 
 ////////////////////////////////////////////////////////////////////////////////
