@@ -15,6 +15,7 @@ set(HEADERS
     include/gadget++/gadget_base.hpp
     include/gadget++/led.hpp
     include/gadget++/rgb_led.hpp
+    include/gadget++/temp.hpp
     include/gadget++/types.hpp
 )
 set(SOURCES
