@@ -36,6 +36,17 @@ struct color
     percent blue;
 };
 
+namespace literals
+{
+
+constexpr color white { 100_pc, 100_pc, 100_pc };
+constexpr color black {   0_pc,   0_pc,   0_pc };
+constexpr color red   { 100_pc,   0_pc,   0_pc };
+constexpr color green {   0_pc, 100_pc,   0_pc };
+constexpr color blue  {   0_pc,   0_pc, 100_pc };
+
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 }
 
