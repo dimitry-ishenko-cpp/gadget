@@ -6,10 +6,22 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 #include <gadget++/rgb_led.hpp>
+#include <algorithm>
 
 ////////////////////////////////////////////////////////////////////////////////
 namespace gadget
 {
+
+////////////////////////////////////////////////////////////////////////////////
+namespace
+{
+
+inline percent clamp(percent pc)
+{
+    return std::max(std::min(pc, 100_pc), 0_pc);
+}
+
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 rgb_led::rgb_led(asio::io_service& io, gpio::pin* red, gpio::pin* green, gpio::pin* blue) :
@@ -17,74 +29,34 @@ rgb_led::rgb_led(asio::io_service& io, gpio::pin* red, gpio::pin* green, gpio::p
 { }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool rgb_led::is_dimmable(gadget::color color) const noexcept
+void rgb_led::set(const gadget::color& color)
 {
-    return get_led(color).is_dimmable();
+    color_.red = clamp(color.red);
+    color_.green = clamp(color.green);
+    color_.blue = clamp(color.blue);
+    update();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void rgb_led::turn(gadget::state state)
 {
-    red_.turn(state); green_.turn(state); blue_.turn(state);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void rgb_led::turn(gadget::color color, gadget::state state)
-{
-    get_led(color).turn(state);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void rgb_led::turn(gadget::state red, gadget::state green, gadget::state blue)
-{
-    red_.turn(red); green_.turn(green); blue_.turn(blue);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-gpio::state rgb_led::state(gadget::color color)
-{
-    return get_led(color).state();
+    pc_ = state == gadget::off ? 0_pc : 100_pc;
+    update();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void rgb_led::dim(percent pc)
 {
-    red_.dim(pc); green_.dim(pc); blue_.dim(pc);
+    pc_ = clamp(pc);
+    update();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void rgb_led::dim(gadget::color color, percent pc)
+void rgb_led::update()
 {
-    get_led(color).dim(pc);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void rgb_led::dim(gpio::percent red, gpio::percent green, gpio::percent blue)
-{
-    red_.dim(red); green_.dim(green); blue_.dim(blue);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-percent rgb_led::level(gadget::color color) const noexcept
-{
-    return get_led(color).level();
-}
-
-////////////////////////////////////////////////////////////////////////////////
-led& rgb_led::get_led(gadget::color color) noexcept
-{
-    switch(color)
-    {
-    case red: return red_;
-    case green: return green_;
-    case blue: return blue_;
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-const led& rgb_led::get_led(gadget::color color) const noexcept
-{
-    return const_cast<rgb_led*>(this)->get_led(color);
+    red_.dim(color_.red * pc_);
+    green_.dim(color_.green * pc_);
+    blue_.dim(color_.blue * pc_);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

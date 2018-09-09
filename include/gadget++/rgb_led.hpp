@@ -19,9 +19,6 @@ namespace gadget
 {
 
 ////////////////////////////////////////////////////////////////////////////////
-enum color { red, green, blue };
-
-////////////////////////////////////////////////////////////////////////////////
 class rgb_led
 {
 public:
@@ -29,30 +26,25 @@ public:
     rgb_led(asio::io_service&, gpio::pin* red, gpio::pin* green, gpio::pin* blue);
 
     ////////////////////
-    bool is_dimmable(color) const noexcept;
+    void set(const gadget::color&);
+    const auto& color() const noexcept { return color_; }
 
-    void turn(gadget::state);
-    void turn(color, gadget::state);
-    void turn(gadget::state red, gadget::state green, gadget::state blue);
-    gadget::state state(color);
+    void turn(state);
 
     void on() { turn(gadget::on); }
-    void on(color c) { turn(c, gadget::on); }
-
     void off() { turn(gadget::off); }
-    void off(color c) { turn(c, gadget::off); }
 
     void dim(percent);
-    void dim(color, percent);
-    void dim(percent red, percent green, percent blue);
-    percent level(color) const noexcept;
+    auto level() const noexcept { return pc_; }
 
 protected:
     ////////////////////
     led red_, green_, blue_;
 
-    led& get_led(color) noexcept;
-    const led& get_led(color) const noexcept;
+    gadget::color color_ = white;
+    percent pc_ = 100_pc;
+
+    void update();
 };
 
 ////////////////////////////////////////////////////////////////////////////////
