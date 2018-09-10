@@ -24,6 +24,7 @@ set(SOURCES
     lib/gadget_base.cpp
     lib/led.cpp
     lib/rgb_led.cpp
+    lib/temp.cpp
 )
 set(FILES LICENSE.md README.md)
 
