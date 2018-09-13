@@ -35,7 +35,10 @@ public:
     bool is_released() { return state() == released; }
 
     template<typename Rep, typename Period>
-    void debounce_time(std::chrono::duration<Rep, Period>);
+    void debounce_time(std::chrono::duration<Rep, Period> time)
+    {
+        time_ = std::chrono::duration_cast<nsec>(time);
+    }
     auto debounce_time() const noexcept { return time_; }
 
     ////////////////////
@@ -53,7 +56,7 @@ protected:
     ////////////////////
     contact_state state_;
 
-    nsec time_ { 10'000'000 };
+    nsec time_ = 5ms;
     asio::system_timer timer_;
 
     call_chain<state_changed> state_changed_;
@@ -62,13 +65,6 @@ protected:
     static contact_state to_contact_state(gpio::state state)
     { return state == off ? pressed : released; }
 };
-
-////////////////////////////////////////////////////////////////////////////////
-template<typename Rep, typename Period>
-void contact::debounce_time(std::chrono::duration<Rep, Period> time)
-{
-    time_ = std::chrono::duration_cast<nsec>(time);
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 }

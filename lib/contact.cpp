@@ -34,13 +34,13 @@ contact::contact(asio::io_service& io, gpio::pin* pin) :
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-cid contact::on_state_changed(contact::state_changed fn)
+cid contact::on_state_changed(state_changed fn)
 {
     return state_changed_.add(std::move(fn));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-cid contact::on_pressed(contact::state_pressed fn)
+cid contact::on_pressed(state_pressed fn)
 {
     return on_state_changed(
         [fn_ = std::move(fn)](contact_state state)
@@ -49,7 +49,7 @@ cid contact::on_pressed(contact::state_pressed fn)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-cid contact::on_released(contact::state_released fn)
+cid contact::on_released(state_released fn)
 {
     return on_state_changed(
         [fn_ = std::move(fn)](contact_state state)
