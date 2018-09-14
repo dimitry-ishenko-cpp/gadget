@@ -9,8 +9,8 @@
 #define GADGET_CONTACT_HPP
 
 ////////////////////////////////////////////////////////////////////////////////
-#include <gadget++/gadget_base.hpp>
 #include <gadget++/types.hpp>
+#include <gpio++/pin.hpp>
 
 #include <asio/io_service.hpp>
 #include <asio/system_timer.hpp>
@@ -22,11 +22,12 @@ namespace gadget
 {
 
 ////////////////////////////////////////////////////////////////////////////////
-class contact : public gadget_base
+class contact
 {
 public:
     ////////////////////
     contact(asio::io_service&, gpio::pin*);
+   ~contact();
 
     ////////////////////
     auto state() { return to_contact_state(pin_->state()); }
@@ -54,6 +55,9 @@ public:
 
 protected:
     ////////////////////
+    gpio::pin* pin_;
+    gpio::cid id_ = ncid;
+
     contact_state state_;
 
     nsec time_ = 5ms;
