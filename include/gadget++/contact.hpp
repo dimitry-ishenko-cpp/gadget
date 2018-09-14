@@ -60,7 +60,7 @@ protected:
 
     contact_state state_;
 
-    nsec time_ = 5ms;
+    nsec time_ = 10ms;
     asio::system_timer timer_;
 
     call_chain<state_changed> state_changed_;
