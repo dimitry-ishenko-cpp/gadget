@@ -43,13 +43,13 @@ public:
     auto debounce_time() const noexcept { return time_; }
 
     ////////////////////
-    using state_changed = std::function<void(contact_state)>;
-    using state_pressed = std::function<void()>;
-    using state_released = std::function<void()>;
+    using fn_state_changed = std::function<void(contact_state)>;
+    using fn_press = std::function<void()>;
+    using fn_release = std::function<void()>;
 
-    cid on_state_changed(state_changed);
-    cid on_pressed(state_pressed);
-    cid on_released(state_released);
+    cid on_state_changed(fn_state_changed);
+    cid on_press(fn_press);
+    cid on_release(fn_release);
 
     bool remove_call(cid);
 
@@ -63,7 +63,7 @@ protected:
     nsec time_ = 10ms;
     asio::system_timer timer_;
 
-    call_chain<state_changed> state_changed_;
+    call_chain<fn_state_changed> state_changed_;
 
     ////////////////////
     static contact_state to_contact_state(gpio::state state)
