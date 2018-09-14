@@ -57,6 +57,6 @@ set(CPACK_SOURCE_IGNORE_FILES /\.git.*;/build/;\.user$)
 set(CPACK_GENERATOR DEB)
 set(CPACK_DEBIAN_PACKAGE_DESCRIPTION "C++ Gadget Library for Linux")
 set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Dimitry Ishenko <dimitry (dot) ishenko (at) (gee) mail (dot) com>")
-set(CPACK_DEBIAN_PACKAGE_DEPENDS "libasio-dev (>= 1.10.10), gpio++ (>= 6.0)")
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "libasio-dev (>= 1.10.10), gpio++ (>= 1.0)")
 
 include(CPack)
