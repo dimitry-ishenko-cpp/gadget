@@ -16,7 +16,7 @@ namespace gadget
 contact::contact(asio::io_service& io, gpio::pin* pin) :
     gadget_base(pin), state_(to_contact_state(pin->state())), timer_(io)
 {
-    reset_callback(pin_->on_state_changed([=](gpio::state state)
+    reset_cid(pin_->on_state_changed([=](gpio::state state)
     {
         timer_.expires_from_now(time_);
         timer_.async_wait([=](const asio::error_code& ec)

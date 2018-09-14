@@ -16,7 +16,7 @@ namespace gadget
 encoder::encoder(asio::io_service&, gpio::pin* pin, gpio::pin* pin2) :
     gadget_base(pin), pin2_(pin2)
 {
-    reset_callback(pin_->on_state_changed([=](gpio::state state)
+    reset_cid(pin_->on_state_changed([=](gpio::state state)
     {
         if(state != state_)
         {

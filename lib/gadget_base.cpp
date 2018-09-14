@@ -12,12 +12,12 @@ namespace gadget
 {
 
 ////////////////////////////////////////////////////////////////////////////////
-gadget_base::~gadget_base() { if(pin_) reset_callback(); }
+gadget_base::~gadget_base() { if(pin_) reset_cid(); }
 
 ////////////////////////////////////////////////////////////////////////////////
-void gadget_base::reset_callback(gpio::cid id)
+void gadget_base::reset_cid(gpio::cid id)
 {
-    if(id_ != none) pin_->remove(id_);
+    if(id_ != ncid) pin_->remove(id_);
     id_ = id;
 }
 
