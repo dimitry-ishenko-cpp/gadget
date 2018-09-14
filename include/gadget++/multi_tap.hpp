@@ -14,6 +14,7 @@
 #include <asio/io_service.hpp>
 #include <asio/system_timer.hpp>
 #include <functional>
+#include <memory>
 
 ////////////////////////////////////////////////////////////////////////////////
 namespace gadget
@@ -25,6 +26,12 @@ class multi_tap
 public:
     ////////////////////
     multi_tap(asio::io_service&);
+
+    multi_tap(const multi_tap&) = delete;
+    multi_tap& operator=(const multi_tap&) = delete;
+
+    multi_tap(multi_tap&&) = default;
+    multi_tap& operator=(multi_tap&&) = default;
 
     template<typename Rep, typename Period>
     void tap_time(std::chrono::duration<Rep, Period> time)
@@ -55,7 +62,7 @@ public:
 
 protected:
     ////////////////////
-    asio::system_timer tap_timer_, long_timer_;
+    std::unique_ptr<asio::system_timer> tap_timer_, long_timer_;
     nsec tap_time_ = 200ms, long_time_ = 2s;
     int taps_ = 0;
     bool tapped_ = false;

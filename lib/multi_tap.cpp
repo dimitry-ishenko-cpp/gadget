@@ -13,7 +13,7 @@ namespace gadget
 
 ////////////////////////////////////////////////////////////////////////////////
 multi_tap::multi_tap(asio::io_service& io) :
-    tap_timer_(io), long_timer_(io)
+    tap_timer_(new asio::system_timer(io)), long_timer_(new asio::system_timer(io))
 { }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -24,8 +24,8 @@ void multi_tap::operator()(contact_state state)
         ++taps_;
         tapped_ = true;
 
-        tap_timer_.expires_from_now(tap_time_);
-        tap_timer_.async_wait([=](const asio::error_code& ec)
+        tap_timer_->expires_from_now(tap_time_);
+        tap_timer_->async_wait([=](const asio::error_code& ec)
         {
             if(ec || tapped_) return; // long tap
 
@@ -36,8 +36,8 @@ void multi_tap::operator()(contact_state state)
             taps_ = 0;
         });
 
-        long_timer_.expires_from_now(long_time_);
-        long_timer_.async_wait([=](const asio::error_code& ec)
+        long_timer_->expires_from_now(long_time_);
+        long_timer_->async_wait([=](const asio::error_code& ec)
         {
             if(ec) return;
 
@@ -51,7 +51,7 @@ void multi_tap::operator()(contact_state state)
     else
     {
         asio::error_code ec;
-        long_timer_.cancel(ec);
+        long_timer_->cancel(ec);
         tapped_ = false;
     }
 
