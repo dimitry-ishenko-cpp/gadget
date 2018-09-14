@@ -15,9 +15,25 @@ namespace gadget
 gadget_base::~gadget_base() { if(pin_) reset_cid(); }
 
 ////////////////////////////////////////////////////////////////////////////////
+gadget_base::gadget_base(gadget_base&& rhs) noexcept :
+    pin_(rhs.pin_), id_(rhs.id_)
+{
+    rhs.pin_ = nullptr; rhs.id_ = ncid;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+gadget_base& gadget_base::operator=(gadget_base&& rhs) noexcept
+{
+    this->gadget_base::~gadget_base();
+    new (this) gadget_base(std::move(rhs));
+
+    return *this;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void gadget_base::reset_cid(gpio::cid id)
 {
-    if(id_ != ncid) pin_->remove(id_);
+    pin_->remove(id_);
     id_ = id;
 }
 

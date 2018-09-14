@@ -24,12 +24,12 @@ public:
     explicit gadget_base(gpio::pin* pin) : pin_(pin) { }
     virtual ~gadget_base();
 
-    gadget_base(gadget_base&&) noexcept = default;
-    gadget_base& operator=(gadget_base&&) noexcept = default;
+    gadget_base(gadget_base&&) noexcept;
+    gadget_base& operator=(gadget_base&&) noexcept;
 
 protected:
     ////////////////////
-    gpio::pin* pin_ = nullptr;
+    gpio::pin* pin_;
     gpio::cid id_ = ncid;
 
     void reset_cid(gpio::cid = ncid);
