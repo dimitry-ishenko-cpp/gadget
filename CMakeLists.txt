@@ -14,6 +14,7 @@ set(HEADERS
     include/gadget++/encoder.hpp
     include/gadget++/gadget_base.hpp
     include/gadget++/led.hpp
+    include/gadget++/multi_tap.hpp
     include/gadget++/rgb_led.hpp
     include/gadget++/temp.hpp
     include/gadget++/types.hpp
@@ -23,6 +24,7 @@ set(SOURCES
     lib/encoder.cpp
     lib/gadget_base.cpp
     lib/led.cpp
+    lib/multi_tap.cpp
     lib/rgb_led.cpp
     lib/temp.cpp
 )
