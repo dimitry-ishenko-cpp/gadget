@@ -13,10 +13,10 @@ namespace gadget
 {
 
 ////////////////////////////////////////////////////////////////////////////////
-encoder::encoder(asio::io_service&, gpio::pin* pin, gpio::pin* pin2) :
-    gadget_base(pin), pin2_(pin2)
+encoder::encoder(asio::io_service&, gpio::pin* pin1, gpio::pin* pin2) :
+    pin1_(pin1), pin2_(pin2)
 {
-    reset_cid(pin_->on_state_changed([=](gpio::state state)
+    id_ = pin1_->on_state_changed([=](gpio::state state)
     {
         if(state != state_)
         {
@@ -25,12 +25,15 @@ encoder::encoder(asio::io_service&, gpio::pin* pin, gpio::pin* pin2) :
                 auto step = pin2_->state() ? cw : ccw;
                 if(step == step_) rotated_(step);
 
-                step_ = none;
+                step_ = nos;
             }
             else step_ = pin2_->state() ? ccw : cw;
         }
-    }));
+    });
 }
+
+////////////////////////////////////////////////////////////////////////////////
+encoder::~encoder() { pin1_->remove(id_); }
 
 ////////////////////////////////////////////////////////////////////////////////
 cid encoder::on_rotated(encoder::rotated fn)
@@ -57,7 +60,10 @@ cid encoder::on_rotated_ccw(encoder::rotated_ccw fn)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool encoder::remove_call(cid id) { return rotated_.remove(id); }
+bool encoder::remove_call(cid id)
+{
+    return rotated_.remove(id);
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 }

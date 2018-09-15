@@ -9,7 +9,6 @@
 #define GADGET_ENCODER_HPP
 
 ////////////////////////////////////////////////////////////////////////////////
-#include <gadget++/gadget_base.hpp>
 #include <gadget++/types.hpp>
 #include <gpio++/pin.hpp>
 
@@ -21,11 +20,12 @@ namespace gadget
 {
 
 ////////////////////////////////////////////////////////////////////////////////
-class encoder : public gadget_base
+class encoder
 {
 public:
     ////////////////////
     encoder(asio::io_service&, gpio::pin*, gpio::pin*);
+   ~encoder();
 
     ////////////////////
     using rotated = std::function<void(encoder_step)>;
@@ -40,11 +40,14 @@ public:
 
 protected:
     ////////////////////
-    gpio::pin* pin2_ = nullptr;
+    gpio::pin* pin1_;
+    gpio::cid id_;
+
+    gpio::pin* pin2_;
     gpio::state state_ = off;
 
-    static constexpr auto none = static_cast<encoder_step>(0);
-    encoder_step step_ = none;
+    static constexpr auto nos = static_cast<encoder_step>(0);
+    encoder_step step_ = nos;
 
     call_chain<rotated> rotated_;
 };
