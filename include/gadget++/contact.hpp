@@ -61,7 +61,8 @@ protected:
     gpio::pin* pin_;
     gpio::cid id_;
 
-    contact_state state_;
+    static constexpr auto nos = static_cast<contact_state>(-1);
+    contact_state state_ = nos;
 
     nsec time_ = 10ms;
     asio::system_timer timer_;

@@ -14,9 +14,7 @@ namespace gadget
 
 ////////////////////////////////////////////////////////////////////////////////
 contact::contact(asio::io_service& io, gpio::pin* pin) :
-    pin_(pin),
-    state_(to_contact_state(pin_->state())),
-    timer_(io)
+    pin_(pin), timer_(io)
 {
     set_callback();
 }
@@ -30,7 +28,6 @@ contact::contact(contact&& rhs) :
 {
     time_ = rhs.time_;
     state_changed_ = std::move(rhs.state_changed_);
-
     rhs.reset();
 }
 
@@ -40,12 +37,11 @@ contact& contact::operator=(contact&& rhs)
     reset();
 
     pin_ = rhs.pin_;
-    state_ = to_contact_state(pin_->state());
+    state_ = nos;
     set_callback();
 
     time_ = rhs.time_;
     state_changed_ = std::move(rhs.state_changed_);
-
     rhs.reset();
 
     return *this;
