@@ -23,7 +23,7 @@ encoder::encoder(asio::io_service&, gpio::pin* pin1, gpio::pin* pin2) :
             if((state_ = state))
             {
                 auto step = pin2_->state() ? cw : ccw;
-                if(step == step_) rotated_(step);
+                if(step == step_) rotate_(step);
 
                 step_ = nos;
             }
@@ -36,24 +36,24 @@ encoder::encoder(asio::io_service&, gpio::pin* pin1, gpio::pin* pin2) :
 encoder::~encoder() { pin1_->remove(id_); }
 
 ////////////////////////////////////////////////////////////////////////////////
-cid encoder::on_rotated(encoder::rotated fn)
+cid encoder::on_rotate(encoder::fn_rotate fn)
 {
-    return rotated_.add(std::move(fn));
+    return rotate_.add(std::move(fn));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-cid encoder::on_rotated_cw(encoder::rotated_cw fn)
+cid encoder::on_rotate_cw(encoder::fn_rotate_cw fn)
 {
-    return on_rotated(
+    return on_rotate(
         [fn_ = std::move(fn)](encoder_step step)
         { if(step == cw) fn_(); }
     );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-cid encoder::on_rotated_ccw(encoder::rotated_ccw fn)
+cid encoder::on_rotate_ccw(encoder::fn_rotate_ccw fn)
 {
-    return on_rotated(
+    return on_rotate(
         [fn_ = std::move(fn)](encoder_step step)
         { if(step == ccw) fn_(); }
     );
@@ -62,7 +62,7 @@ cid encoder::on_rotated_ccw(encoder::rotated_ccw fn)
 ////////////////////////////////////////////////////////////////////////////////
 bool encoder::remove_call(cid id)
 {
-    return rotated_.remove(id);
+    return rotate_.remove(id);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

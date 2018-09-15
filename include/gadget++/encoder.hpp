@@ -28,13 +28,13 @@ public:
    ~encoder();
 
     ////////////////////
-    using rotated = std::function<void(encoder_step)>;
-    using rotated_cw = std::function<void()>;
-    using rotated_ccw = std::function<void()>;
+    using fn_rotate = std::function<void(encoder_step)>;
+    using fn_rotate_cw = std::function<void()>;
+    using fn_rotate_ccw = std::function<void()>;
 
-    cid on_rotated(rotated);
-    cid on_rotated_cw(rotated_cw);
-    cid on_rotated_ccw(rotated_ccw);
+    cid on_rotate(fn_rotate);
+    cid on_rotate_cw(fn_rotate_cw);
+    cid on_rotate_ccw(fn_rotate_ccw);
 
     bool remove_call(cid);
 
@@ -49,7 +49,7 @@ protected:
     static constexpr auto nos = static_cast<encoder_step>(0);
     encoder_step step_ = nos;
 
-    call_chain<rotated> rotated_;
+    call_chain<fn_rotate> rotate_;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
