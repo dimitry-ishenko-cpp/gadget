@@ -25,6 +25,9 @@ public:
     ////////////////////
     rgb_led(gpio::pin* red, gpio::pin* green, gpio::pin* blue);
 
+    rgb_led(rgb_led&&) = default;
+    rgb_led& operator=(rgb_led&&) = default;
+
     ////////////////////
     void set(const gadget::color&);
     const auto& color() const noexcept { return color_; }
