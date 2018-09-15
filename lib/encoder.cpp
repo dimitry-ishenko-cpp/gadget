@@ -37,10 +37,10 @@ encoder& encoder::operator=(encoder&& rhs)
 
     pin1_   = rhs.pin1_;
     pin2_   = rhs.pin2_;
-    state_  = rhs.state_;
-    step_   = rhs.step_;
-    rotate_ = std::move(rhs.rotate_);
+    state_  = off;
+    step_   = nos;
 
+    rotate_ = std::move(rhs.rotate_);
     rhs.reset();
 
     return *this;
