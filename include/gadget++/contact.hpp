@@ -29,6 +29,8 @@ public:
     contact(asio::io_service&, gpio::pin*);
    ~contact();
 
+    contact(contact&&);
+
     ////////////////////
     auto state() { return to_contact_state(pin_->state()); }
 
@@ -56,7 +58,7 @@ public:
 protected:
     ////////////////////
     gpio::pin* pin_;
-    gpio::cid id_ = ncid;
+    gpio::cid id_;
 
     contact_state state_;
 

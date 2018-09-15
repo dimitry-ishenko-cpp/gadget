@@ -14,10 +14,10 @@ namespace gadget
 
 ////////////////////////////////////////////////////////////////////////////////
 contact::contact(asio::io_service& io, gpio::pin* pin) :
-    pin_(pin), timer_(io)
+    pin_(pin),
+    state_(to_contact_state(pin->state())),
+    timer_(io)
 {
-    state_ = to_contact_state(pin_->state());
-
     id_ = pin_->on_state_changed([=](gpio::state state)
     {
         timer_.expires_from_now(time_);
@@ -37,6 +37,14 @@ contact::contact(asio::io_service& io, gpio::pin* pin) :
 
 ////////////////////////////////////////////////////////////////////////////////
 contact::~contact() { pin_->remove(id_); }
+
+////////////////////////////////////////////////////////////////////////////////
+contact::contact(contact&& rhs) :
+    contact(rhs.timer_.get_io_service(), rhs.pin_)
+{
+    time_ = rhs.time_;
+    state_changed_ = std::move(rhs.state_changed_);
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 cid contact::on_state_changed(fn_state_changed fn)
