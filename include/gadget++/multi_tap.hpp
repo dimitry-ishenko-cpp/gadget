@@ -41,34 +41,34 @@ public:
     auto tap_time() const noexcept { return tap_time_; }
 
     template<typename Rep, typename Period>
-    void long_time(std::chrono::duration<Rep, Period> time)
+    void hold_time(std::chrono::duration<Rep, Period> time)
     {
-        long_time_ = std::chrono::duration_cast<nsec>(time);
+        hold_time_ = std::chrono::duration_cast<nsec>(time);
     }
-    auto long_time() const noexcept { return long_time_; }
+    auto hold_time() const noexcept { return hold_time_; }
 
     void operator()(contact_state);
 
     ////////////////////
-    using tapped = std::function<void()>;
+    using fn_tap = std::function<void()>;
 
-    multi_tap& on_tapped_once(tapped);
-    multi_tap& on_tapped_twice(tapped);
-    multi_tap& on_tapped_thrice(tapped);
+    multi_tap& on_tap_once(fn_tap);
+    multi_tap& on_tap_twice(fn_tap);
+    multi_tap& on_tap_thrice(fn_tap);
 
-    multi_tap& on_long_tapped_once(tapped);
-    multi_tap& on_long_tapped_twice(tapped);
-    multi_tap& on_long_tapped_thrice(tapped);
+    multi_tap& on_tap_once_hold(fn_tap);
+    multi_tap& on_tap_twice_hold(fn_tap);
+    multi_tap& on_tap_thrice_hold(fn_tap);
 
 protected:
     ////////////////////
-    std::unique_ptr<asio::system_timer> tap_timer_, long_timer_;
-    nsec tap_time_ = 200ms, long_time_ = 2s;
+    std::unique_ptr<asio::system_timer> tap_timer_, hold_timer_;
+    nsec tap_time_ = 200ms, hold_time_ = 2s;
     int taps_ = 0;
-    bool tapped_ = false;
+    bool holding_ = false;
 
-    call_chain<tapped> once_, twice_, thrice_;
-    call_chain<tapped> long_once_, long_twice_, long_thrice_;
+    call_chain<fn_tap> once_, twice_, thrice_;
+    call_chain<fn_tap> once_hold_, twice_hold_, thrice_hold_;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
