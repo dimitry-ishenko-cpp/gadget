@@ -26,8 +26,7 @@ encoder::~encoder() { pin1_->remove(id_); }
 encoder::encoder(encoder&& rhs) :
     encoder(rhs.pin1_, rhs.pin2_)
 {
-    rotate_ = std::move(rhs.rotate_);
-    rhs.reset();
+    move_and_reset(rhs);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -35,14 +34,12 @@ encoder& encoder::operator=(encoder&& rhs)
 {
     reset();
 
-    pin1_   = rhs.pin1_;
-    pin2_   = rhs.pin2_;
-    state_  = off;
-    step_   = nos;
+    pin1_  = rhs.pin1_;
+    pin2_  = rhs.pin2_;
+    state_ = off;
+    step_  = nos;
 
-    rotate_ = std::move(rhs.rotate_);
-    rhs.reset();
-
+    move_and_reset(rhs);
     return *this;
 }
 
@@ -104,6 +101,13 @@ void encoder::set_callback()
             else step_ = pin2_->state() ? ccw : cw;
         }
     });
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void encoder::move_and_reset(encoder& rhs)
+{
+    rotate_ = std::move(rhs.rotate_);
+    rhs.reset();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
