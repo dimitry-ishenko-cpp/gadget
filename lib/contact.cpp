@@ -26,9 +26,7 @@ contact::~contact() { reset(); }
 contact::contact(contact&& rhs) :
     contact(rhs.timer_.get_io_service(), rhs.pin_)
 {
-    time_ = rhs.time_;
-    state_changed_ = std::move(rhs.state_changed_);
-    rhs.reset();
+    move_and_reset(rhs);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -40,10 +38,7 @@ contact& contact::operator=(contact&& rhs)
     state_ = nos;
     set_callback();
 
-    time_ = rhs.time_;
-    state_changed_ = std::move(rhs.state_changed_);
-    rhs.reset();
-
+    move_and_reset(rhs);
     return *this;
 }
 
@@ -108,6 +103,14 @@ void contact::reset()
         pin_->remove(id_);
         pin_ = nullptr;
     }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void contact::move_and_reset(contact& rhs)
+{
+    time_ = rhs.time_;
+    state_changed_ = std::move(rhs.state_changed_);
+    rhs.reset();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

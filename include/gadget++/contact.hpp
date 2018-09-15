@@ -75,6 +75,7 @@ protected:
 
     void set_callback();
     void reset();
+    void move_and_reset(contact&);
 };
 
 ////////////////////////////////////////////////////////////////////////////////
