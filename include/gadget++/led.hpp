@@ -25,8 +25,12 @@ public:
     ////////////////////
     led(gpio::pin* pin) : pin_(pin) { }
 
-    led(led&&) noexcept = default;
-    led& operator=(led&&) noexcept = default;
+    led(led&& rhs) noexcept : pin_(rhs.pin_) { rhs.pin_ = nullptr; }
+    led& operator=(led&& rhs) noexcept
+    {
+        pin_ = rhs.pin_; rhs.pin_ = nullptr;
+        return *this;
+    }
 
     ////////////////////
     void turn(state s) { pin_->set(s); }
