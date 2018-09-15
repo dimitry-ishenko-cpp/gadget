@@ -24,8 +24,10 @@ class encoder
 {
 public:
     ////////////////////
-    encoder(asio::io_service&, gpio::pin*, gpio::pin*);
+    encoder(gpio::pin*, gpio::pin*);
    ~encoder();
+
+    encoder(encoder&&);
 
     ////////////////////
     using fn_rotate = std::function<void(encoder_step)>;

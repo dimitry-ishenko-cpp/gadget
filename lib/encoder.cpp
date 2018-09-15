@@ -13,7 +13,7 @@ namespace gadget
 {
 
 ////////////////////////////////////////////////////////////////////////////////
-encoder::encoder(asio::io_service&, gpio::pin* pin1, gpio::pin* pin2) :
+encoder::encoder(gpio::pin* pin1, gpio::pin* pin2) :
     pin1_(pin1), pin2_(pin2)
 {
     id_ = pin1_->on_state_changed([=](gpio::state state)
@@ -34,6 +34,13 @@ encoder::encoder(asio::io_service&, gpio::pin* pin1, gpio::pin* pin2) :
 
 ////////////////////////////////////////////////////////////////////////////////
 encoder::~encoder() { pin1_->remove(id_); }
+
+////////////////////////////////////////////////////////////////////////////////
+encoder::encoder(encoder&& rhs) :
+    encoder(rhs.pin1_, rhs.pin2_)
+{
+    rotate_ = std::move(rhs.rotate_);
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 cid encoder::on_rotate(encoder::fn_rotate fn)
