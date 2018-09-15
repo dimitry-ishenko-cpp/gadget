@@ -30,6 +30,7 @@ public:
    ~contact();
 
     contact(contact&&);
+    contact& operator=(contact&&);
 
     ////////////////////
     auto state() { return to_contact_state(pin_->state()); }
@@ -70,6 +71,9 @@ protected:
     ////////////////////
     static contact_state to_contact_state(gpio::state state)
     { return state == off ? pressed : released; }
+
+    void set_callback();
+    void reset();
 };
 
 ////////////////////////////////////////////////////////////////////////////////
