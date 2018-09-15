@@ -27,11 +27,8 @@ public:
     ////////////////////
     multi_tap(asio::io_service&);
 
-    multi_tap(const multi_tap&) = delete;
-    multi_tap& operator=(const multi_tap&) = delete;
-
-    multi_tap(multi_tap&&) = default;
-    multi_tap& operator=(multi_tap&&) = default;
+    multi_tap(multi_tap&&);
+    multi_tap& operator=(multi_tap&&);
 
     template<typename Rep, typename Period>
     void tap_time(std::chrono::duration<Rep, Period> time)
@@ -53,22 +50,28 @@ public:
     using fn_tap = std::function<void()>;
 
     multi_tap& on_tap_once(fn_tap);
-    multi_tap& on_tap_twice(fn_tap);
-    multi_tap& on_tap_thrice(fn_tap);
-
     multi_tap& on_tap_once_hold(fn_tap);
+
+    multi_tap& on_tap_twice(fn_tap);
     multi_tap& on_tap_twice_hold(fn_tap);
+
+    multi_tap& on_tap_thrice(fn_tap);
     multi_tap& on_tap_thrice_hold(fn_tap);
 
 protected:
     ////////////////////
-    std::unique_ptr<asio::system_timer> tap_timer_, hold_timer_;
+    asio::system_timer tap_timer_, hold_timer_;
     nsec tap_time_ = 200ms, hold_time_ = 2s;
     int taps_ = 0;
     bool holding_ = false;
 
-    call_chain<fn_tap> once_, twice_, thrice_;
-    call_chain<fn_tap> once_hold_, twice_hold_, thrice_hold_;
+    call_chain<fn_tap> once_, once_hold_;
+    call_chain<fn_tap> twice_, twice_hold_;
+    call_chain<fn_tap> thrice_, thrice_hold_;
+
+    ////////////////////
+    void reset();
+    void move_and_reset(multi_tap&);
 };
 
 ////////////////////////////////////////////////////////////////////////////////
