@@ -28,6 +28,7 @@ public:
    ~encoder();
 
     encoder(encoder&&);
+    encoder& operator=(encoder&&);
 
     ////////////////////
     using fn_rotate = std::function<void(encoder_step)>;
@@ -52,6 +53,10 @@ protected:
     encoder_step step_ = nos;
 
     call_chain<fn_rotate> rotate_;
+
+    ////////////////////
+    void reset();
+    void set_callback();
 };
 
 ////////////////////////////////////////////////////////////////////////////////

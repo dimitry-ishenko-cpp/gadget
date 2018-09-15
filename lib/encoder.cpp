@@ -16,20 +16,7 @@ namespace gadget
 encoder::encoder(gpio::pin* pin1, gpio::pin* pin2) :
     pin1_(pin1), pin2_(pin2)
 {
-    id_ = pin1_->on_state_changed([=](gpio::state state)
-    {
-        if(state != state_)
-        {
-            if((state_ = state))
-            {
-                auto step = pin2_->state() ? cw : ccw;
-                if(step == step_) rotate_(step);
-
-                step_ = nos;
-            }
-            else step_ = pin2_->state() ? ccw : cw;
-        }
-    });
+    set_callback();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -40,6 +27,23 @@ encoder::encoder(encoder&& rhs) :
     encoder(rhs.pin1_, rhs.pin2_)
 {
     rotate_ = std::move(rhs.rotate_);
+    rhs.reset();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+encoder& encoder::operator=(encoder&& rhs)
+{
+    reset();
+
+    pin1_   = rhs.pin1_;
+    pin2_   = rhs.pin2_;
+    state_  = rhs.state_;
+    step_   = rhs.step_;
+    rotate_ = std::move(rhs.rotate_);
+
+    rhs.reset();
+
+    return *this;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -70,6 +74,36 @@ cid encoder::on_rotate_ccw(encoder::fn_rotate_ccw fn)
 bool encoder::remove_call(cid id)
 {
     return rotate_.remove(id);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void encoder::reset()
+{
+    if(pin1_)
+    {
+        pin1_->remove(id_);
+        pin1_ = nullptr;
+    }
+    pin2_ = nullptr;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void encoder::set_callback()
+{
+    if(pin1_) id_ = pin1_->on_state_changed([=](gpio::state state)
+    {
+        if(state != state_)
+        {
+            if((state_ = state))
+            {
+                auto step = pin2_->state() ? cw : ccw;
+                if(step == step_) rotate_(step);
+
+                step_ = nos;
+            }
+            else step_ = pin2_->state() ? ccw : cw;
+        }
+    });
 }
 
 ////////////////////////////////////////////////////////////////////////////////
