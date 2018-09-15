@@ -23,7 +23,7 @@ class rgb_led
 {
 public:
     ////////////////////
-    rgb_led(asio::io_service&, gpio::pin* red, gpio::pin* green, gpio::pin* blue);
+    rgb_led(gpio::pin* red, gpio::pin* green, gpio::pin* blue);
 
     ////////////////////
     void set(const gadget::color&);

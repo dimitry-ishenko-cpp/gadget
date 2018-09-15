@@ -24,8 +24,8 @@ inline percent clamp(percent pc)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-rgb_led::rgb_led(asio::io_service& io, gpio::pin* red, gpio::pin* green, gpio::pin* blue) :
-    red_(io, red), green_(io, green), blue_(io, blue)
+rgb_led::rgb_led(gpio::pin* red, gpio::pin* green, gpio::pin* blue) :
+    red_(red), green_(green), blue_(blue)
 { }
 
 ////////////////////////////////////////////////////////////////////////////////
