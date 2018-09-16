@@ -12,7 +12,6 @@ include_directories(include)
 set(HEADERS
     include/gadget++/contact.hpp
     include/gadget++/encoder.hpp
-    include/gadget++/gadget_base.hpp
     include/gadget++/led.hpp
     include/gadget++/multi_tap.hpp
     include/gadget++/rgb_led.hpp
@@ -23,7 +22,6 @@ set(HEADERS
 set(SOURCES
     lib/contact.cpp
     lib/encoder.cpp
-    lib/gadget_base.cpp
     lib/multi_tap.cpp
     lib/rgb_led.cpp
     lib/temp.cpp
