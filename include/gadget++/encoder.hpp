@@ -10,6 +10,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 #include <gadget++/types.hpp>
+#include <gadget++/unique_function.hpp>
 #include <gpio++/pin.hpp>
 
 #include <asio/io_service.hpp>
@@ -31,9 +32,9 @@ public:
     encoder& operator=(encoder&&);
 
     ////////////////////
-    using fn_rotate = std::function<void(encoder_step)>;
-    using fn_rotate_cw = std::function<void()>;
-    using fn_rotate_ccw = std::function<void()>;
+    using fn_rotate = unique_function<void(encoder_step)>;
+    using fn_rotate_cw = unique_function<void()>;
+    using fn_rotate_ccw = unique_function<void()>;
 
     cid on_rotate(fn_rotate);
     cid on_rotate_cw(fn_rotate_cw);
@@ -53,6 +54,8 @@ protected:
     encoder_step step_ = nos;
 
     call_chain<fn_rotate> rotate_;
+    call_chain<fn_rotate_cw> rotate_cw_;
+    call_chain<fn_rotate_ccw> rotate_ccw_;
 
     ////////////////////
     void reset();

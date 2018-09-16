@@ -52,25 +52,21 @@ cid encoder::on_rotate(encoder::fn_rotate fn)
 ////////////////////////////////////////////////////////////////////////////////
 cid encoder::on_rotate_cw(encoder::fn_rotate_cw fn)
 {
-    return on_rotate(
-        [fn_ = std::move(fn)](encoder_step step)
-        { if(step == cw) fn_(); }
-    );
+    return rotate_cw_.add(std::move(fn));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 cid encoder::on_rotate_ccw(encoder::fn_rotate_ccw fn)
 {
-    return on_rotate(
-        [fn_ = std::move(fn)](encoder_step step)
-        { if(step == ccw) fn_(); }
-    );
+    return rotate_ccw_.add(std::move(fn));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool encoder::remove_call(cid id)
 {
-    return rotate_.remove(id);
+    return rotate_.remove(id)
+        || rotate_cw_.remove(id)
+        || rotate_ccw_.remove(id);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -94,7 +90,13 @@ void encoder::set_callback()
             if((state_ = state))
             {
                 auto step = pin2_->state() ? cw : ccw;
-                if(step == step_) rotate_(step);
+                if(step == step_)
+                {
+                    rotate_(step);
+
+                         if(step == cw) rotate_cw_();
+                    else if(step == ccw) rotate_ccw_();
+                }
 
                 step_ = nos;
             }
@@ -107,6 +109,9 @@ void encoder::set_callback()
 void encoder::move_and_reset(encoder& rhs)
 {
     rotate_ = std::move(rhs.rotate_);
+    rotate_cw_ = std::move(rhs.rotate_cw_);
+    rotate_ccw_ = std::move(rhs.rotate_ccw_);
+
     rhs.reset();
 }
 
