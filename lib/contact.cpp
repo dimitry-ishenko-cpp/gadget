@@ -51,25 +51,21 @@ cid contact::on_state_changed(fn_state_changed fn)
 ////////////////////////////////////////////////////////////////////////////////
 cid contact::on_press(fn_press fn)
 {
-    return on_state_changed(
-        [fn_ = std::move(fn)](contact_state state)
-        { if(state == pressed) fn_(); }
-    );
+    return press_.add(std::move(fn));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 cid contact::on_release(fn_release fn)
 {
-    return on_state_changed(
-        [fn_ = std::move(fn)](contact_state state)
-        { if(state == released) fn_(); }
-    );
+    return release_.add(std::move(fn));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool contact::remove_call(cid id)
 {
-    return state_changed_.remove(id);
+    return state_changed_.remove(id)
+        || press_.remove(id)
+        || release_.remove(id);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -87,6 +83,9 @@ void contact::set_callback()
             {
                 state_ = new_state;
                 state_changed_(state_);
+
+                     if(state_ == pressed) press_();
+                else if(state_ == released) release_();
             }
         });
     });
@@ -109,7 +108,11 @@ void contact::reset()
 void contact::move_and_reset(contact& rhs)
 {
     time_ = rhs.time_;
+
     state_changed_ = std::move(rhs.state_changed_);
+    press_ = std::move(rhs.press_);
+    release_ = std::move(rhs.release_);
+
     rhs.reset();
 }
 
