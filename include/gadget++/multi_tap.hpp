@@ -10,6 +10,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 #include <gadget++/types.hpp>
+#include <gadget++/unique_function.hpp>
 
 #include <asio/io_service.hpp>
 #include <asio/system_timer.hpp>
@@ -47,7 +48,7 @@ public:
     void operator()(contact_state);
 
     ////////////////////
-    using fn_tap = std::function<void()>;
+    using fn_tap = unique_function<void()>;
 
     multi_tap& on_tap_once(fn_tap);
     multi_tap& on_tap_once_hold(fn_tap);
