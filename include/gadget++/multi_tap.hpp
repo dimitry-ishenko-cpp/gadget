@@ -10,7 +10,6 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 #include <gadget++/types.hpp>
-#include <gadget++/unique_function.hpp>
 
 #include <asio/io_service.hpp>
 #include <asio/system_timer.hpp>
@@ -48,7 +47,7 @@ public:
     void operator()(gpio::state);
 
     ////////////////////
-    using fn_tap = unique_function<void()>;
+    using fn_tap = std::function<void()>;
 
     cid on_tap_once(fn_tap);
     cid on_tap_once_hold(fn_tap);
@@ -66,8 +65,8 @@ protected:
     int taps_ = 0;
     bool holding_ = false;
 
-    using fn_tap_ = unique_function<void(int)>;
-    using fn_hold_ = unique_function<void(int)>;
+    using fn_tap_ = std::function<void(int)>;
+    using fn_hold_ = std::function<void(int)>;
 
     call_chain<fn_tap_> tap_;
     call_chain<fn_hold_> hold_;
