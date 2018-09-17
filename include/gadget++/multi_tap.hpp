@@ -14,8 +14,8 @@
 
 #include <asio/io_service.hpp>
 #include <asio/system_timer.hpp>
+#include <chrono>
 #include <functional>
-#include <memory>
 
 ////////////////////////////////////////////////////////////////////////////////
 namespace gadget
@@ -45,19 +45,19 @@ public:
     }
     auto hold_time() const noexcept { return hold_time_; }
 
-    void operator()(contact_state);
+    void operator()(gpio::state);
 
     ////////////////////
     using fn_tap = unique_function<void()>;
 
-    multi_tap& on_tap_once(fn_tap);
-    multi_tap& on_tap_once_hold(fn_tap);
+    cid on_tap_once(fn_tap);
+    cid on_tap_once_hold(fn_tap);
 
-    multi_tap& on_tap_twice(fn_tap);
-    multi_tap& on_tap_twice_hold(fn_tap);
+    cid on_tap_twice(fn_tap);
+    cid on_tap_twice_hold(fn_tap);
 
-    multi_tap& on_tap_thrice(fn_tap);
-    multi_tap& on_tap_thrice_hold(fn_tap);
+    cid on_tap_thrice(fn_tap);
+    cid on_tap_thrice_hold(fn_tap);
 
 protected:
     ////////////////////
@@ -66,13 +66,14 @@ protected:
     int taps_ = 0;
     bool holding_ = false;
 
-    call_chain<fn_tap> once_, once_hold_;
-    call_chain<fn_tap> twice_, twice_hold_;
-    call_chain<fn_tap> thrice_, thrice_hold_;
+    using fn_tap_ = unique_function<void(int)>;
+    using fn_hold_ = unique_function<void(int)>;
+
+    call_chain<fn_tap_> tap_;
+    call_chain<fn_hold_> hold_;
 
     ////////////////////
     void reset();
-    void move_and_reset(multi_tap&);
 };
 
 ////////////////////////////////////////////////////////////////////////////////

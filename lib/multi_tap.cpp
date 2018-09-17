@@ -19,27 +19,31 @@ multi_tap::multi_tap(asio::io_service& io) :
 ////////////////////////////////////////////////////////////////////////////////
 multi_tap::multi_tap(multi_tap&& rhs) :
     tap_timer_(rhs.tap_timer_.get_io_service()),
-    hold_timer_(rhs.hold_timer_.get_io_service())
-{
-    move_and_reset(rhs);
-}
+    hold_timer_(rhs.hold_timer_.get_io_service()),
+    tap_time_(rhs.tap_time_),
+    hold_time_(rhs.hold_time_)
+{ rhs.reset(); }
 
 ////////////////////////////////////////////////////////////////////////////////
 multi_tap& multi_tap::operator=(multi_tap&& rhs)
 {
     reset();
 
+    tap_time_ = rhs.tap_time_;
+    hold_time_ = rhs.hold_time_;
     taps_ = 0;
     holding_ = false;
+    tap_ = std::move(rhs.tap_);
+    hold_ = std::move(rhs.hold_);
 
-    move_and_reset(rhs);
+    rhs.reset();
     return *this;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void multi_tap::operator()(contact_state state)
+void multi_tap::operator()(gpio::state state)
 {
-    if(state == pressed)
+    if(state == off)
     {
         ++taps_;
         holding_ = true;
@@ -49,10 +53,7 @@ void multi_tap::operator()(contact_state state)
         {
             if(ec || holding_) return;
 
-                 if(taps_ == 1) once_();
-            else if(taps_ == 2) twice_();
-            else if(taps_ == 3) thrice_();
-
+            tap_(taps_);
             taps_ = 0;
         });
 
@@ -61,10 +62,7 @@ void multi_tap::operator()(contact_state state)
         {
             if(ec) return;
 
-                 if(taps_ == 1) once_hold_();
-            else if(taps_ == 2) twice_hold_();
-            else if(taps_ == 3) thrice_hold_();
-
+            hold_(taps_);
             taps_ = 0;
         });
     }
@@ -77,45 +75,39 @@ void multi_tap::operator()(contact_state state)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-multi_tap& multi_tap::on_tap_once(fn_tap fn)
+cid multi_tap::on_tap_once(fn_tap fn)
 {
-    once_.add(std::move(fn));
-    return *this;
+    return tap_.add([fn_ = std::move(fn)](int taps){ if(taps == 1) fn_(); });
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-multi_tap& multi_tap::on_tap_once_hold(fn_tap fn)
+cid multi_tap::on_tap_once_hold(fn_tap fn)
 {
-    once_hold_.add(std::move(fn));
-    return *this;
+    return hold_.add([fn_ = std::move(fn)](int taps){ if(taps == 1) fn_(); });
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-multi_tap& multi_tap::on_tap_twice(fn_tap fn)
+cid multi_tap::on_tap_twice(fn_tap fn)
 {
-    twice_.add(std::move(fn));
-    return *this;
+    return tap_.add([fn_ = std::move(fn)](int taps){ if(taps == 2) fn_(); });
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-multi_tap& multi_tap::on_tap_twice_hold(fn_tap fn)
+cid multi_tap::on_tap_twice_hold(fn_tap fn)
 {
-    twice_hold_.add(std::move(fn));
-    return *this;
+    return hold_.add([fn_ = std::move(fn)](int taps){ if(taps == 2) fn_(); });
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-multi_tap& multi_tap::on_tap_thrice(fn_tap fn)
+cid multi_tap::on_tap_thrice(fn_tap fn)
 {
-    thrice_.add(std::move(fn));
-    return *this;
+    return tap_.add([fn_ = std::move(fn)](int taps){ if(taps == 3) fn_(); });
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-multi_tap& multi_tap::on_tap_thrice_hold(fn_tap fn)
+cid multi_tap::on_tap_thrice_hold(fn_tap fn)
 {
-    thrice_hold_.add(std::move(fn));
-    return *this;
+    return hold_.add([fn_ = std::move(fn)](int taps){ if(taps == 3) fn_(); });
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -124,24 +116,6 @@ void multi_tap::reset()
     asio::error_code ec;
     tap_timer_.cancel(ec);
     hold_timer_.cancel(ec);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void multi_tap::move_and_reset(multi_tap& rhs)
-{
-    tap_time_ = rhs.tap_time_;
-    hold_time_ = rhs.hold_time_;
-
-    once_ = std::move(rhs.once_);
-    once_hold_ = std::move(rhs.once_hold_);
-
-    twice_ = std::move(rhs.twice_);
-    twice_hold_ = std::move(rhs.twice_hold_);
-
-    thrice_ = std::move(rhs.thrice_);
-    thrice_hold_ = std::move(rhs.thrice_hold_);
-
-    rhs.reset();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
