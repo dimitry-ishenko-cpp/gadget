@@ -62,7 +62,7 @@ public:
 protected:
     ////////////////////
     asio::system_timer tap_timer_, hold_timer_;
-    nsec tap_time_ = 200ms, hold_time_ = 2s;
+    nsec tap_time_ = 250ms, hold_time_ = 1200ms;
     int taps_ = 0;
     bool holding_ = false;
 
