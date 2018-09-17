@@ -11,7 +11,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 #include <gadget++/multi_tap.hpp>
 #include <gadget++/types.hpp>
-#include <gadget++/unique_function.hpp>
 #include <gpio++/pin.hpp>
 
 #include <asio/io_service.hpp>
@@ -48,9 +47,9 @@ public:
     auto debounce_time() const noexcept { return time_; }
 
     ////////////////////
-    using fn_state_changed = unique_function<void(contact_state)>;
-    using fn_press = unique_function<void()>;
-    using fn_release = unique_function<void()>;
+    using fn_state_changed = std::function<void(contact_state)>;
+    using fn_press = std::function<void()>;
+    using fn_release = std::function<void()>;
 
     cid on_state_changed(fn_state_changed);
     cid on_press(fn_press);
