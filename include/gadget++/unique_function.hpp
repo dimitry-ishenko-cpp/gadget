@@ -21,31 +21,42 @@ template<typename T>
 class unique_function : public std::function<T>
 {
     ////////////////////
+    template<typename Fn, typename En = void>
+    struct wrap;
+
+    // specialization for CopyConstructible Fn
     template<typename Fn>
-    struct wrapper
+    struct wrap<Fn, std::enable_if_t< std::is_copy_constructible<Fn>::value >>
     {
-        wrapper(Fn&& f) : f_(std::move(f)) { }
-
-        wrapper(const wrapper&) { throw 0; }
-        wrapper& operator=(const wrapper&) { throw 0; }
-
-        wrapper(wrapper&&) = default;
-        wrapper& operator=(wrapper&&) = default;
-
         template<typename... Args>
-        auto operator()(Args&&... args) { return f_(std::forward<Args>(args)...); }
+        auto operator()(Args&&... args) { return fn(std::forward<Args>(args)...); }
 
-        Fn f_;
+        Fn fn;
     };
 
-    template<typename U>
-    using if_copyable = std::enable_if_t< std::is_copy_constructible<U>::value >;
+    // specialization for MoveConstructible-only Fn
+    template<typename Fn>
+    struct wrap<Fn, std::enable_if_t< !std::is_copy_constructible<Fn>::value
+        && std::is_move_constructible<Fn>::value >>
+    {
+        wrap(Fn&& fn) : fn(std::forward<Fn>(fn)) { }
 
-    template<typename U>
-    using if_movable = std::enable_if_t< !std::is_copy_constructible<U>::value
-        && std::is_move_constructible<U>::value
-    >;
+        wrap(wrap&&) = default;
+        wrap& operator=(wrap&&) = default;
 
+        // these two functions are instantiated by std::function
+        // and are never called;
+        // hack to initialize non-DefaultContructible fn
+        wrap(const wrap& rhs) : fn(const_cast<Fn&&>(rhs.fn)) { throw 0; }
+        wrap& operator=(wrap&) { throw 0; }
+
+        template<typename... Args>
+        auto operator()(Args&&... args) { return fn(std::forward<Args>(args)...); }
+
+        Fn fn;
+    };
+
+    ////////////////////
     using base = std::function<T>;
 
 public:
@@ -53,23 +64,17 @@ public:
     unique_function() noexcept = default;
     unique_function(std::nullptr_t) noexcept : base(nullptr) { }
 
-    template<typename Fn, typename = if_copyable<Fn>>
-    unique_function(const Fn& f) : base(f) { }
-
-    template<typename Fn, typename = if_movable<Fn>>
-    unique_function(Fn&& f) : base(wrapper<Fn>(std::move(f))) { }
+    template<typename Fn>
+    unique_function(Fn&& fn) : base(wrap<Fn>{ std::forward<Fn>(fn) }) { }
 
     unique_function(unique_function&&) = default;
     unique_function& operator=(unique_function&&) = default;
 
     unique_function& operator=(std::nullptr_t) { base::operator=(nullptr); return *this; }
 
-    template<typename Fn, typename = if_copyable<Fn>>
-    unique_function& operator=(const Fn& f) { base::operator=(f); return *this; }
-
-    template<typename Fn, typename = if_movable<Fn>>
-    unique_function& operator=(Fn&& f)
-    { base::operator=(wrapper<Fn>(std::move(f))); return *this; }
+    template<typename Fn>
+    unique_function& operator=(Fn&& fn)
+    { base::operator=(wrap<Fn>{ std::forward<Fn>(fn) }); return *this; }
 
     ////////////////////
     using base::operator();
