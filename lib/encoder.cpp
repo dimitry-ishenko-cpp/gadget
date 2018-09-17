@@ -16,7 +16,7 @@ namespace gadget
 encoder::encoder(gpio::pin* pin1, gpio::pin* pin2) :
     pin1_(pin1), pin2_(pin2)
 {
-    set_callback();
+    set_call();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -24,22 +24,24 @@ encoder::~encoder() { pin1_->remove(id_); }
 
 ////////////////////////////////////////////////////////////////////////////////
 encoder::encoder(encoder&& rhs) :
-    encoder(rhs.pin1_, rhs.pin2_)
+    pin1_(rhs.pin1_), pin2_(rhs.pin2_),
+    rotate_(std::move(rhs.rotate_))
 {
-    move_and_reset(rhs);
+    set_call();
+    rhs.reset_call();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 encoder& encoder::operator=(encoder&& rhs)
 {
-    reset();
+    reset_call();
 
-    pin1_  = rhs.pin1_;
-    pin2_  = rhs.pin2_;
-    state_ = off;
-    step_  = nos;
+    pin1_ = rhs.pin1_; pin2_ = rhs.pin2_;
+    state_ = off; step_ = nos;
+    rotate_ = std::move(rhs.rotate_);
+    set_call();
 
-    move_and_reset(rhs);
+    rhs.reset_call();
     return *this;
 }
 
@@ -52,36 +54,29 @@ cid encoder::on_rotate(encoder::fn_rotate fn)
 ////////////////////////////////////////////////////////////////////////////////
 cid encoder::on_rotate_cw(encoder::fn_rotate_cw fn)
 {
-    return rotate_cw_.add(std::move(fn));
+    return on_rotate(
+        [fn_ = std::move(fn)](encoder_step step)
+        { if(step == cw) fn_(); }
+    );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 cid encoder::on_rotate_ccw(encoder::fn_rotate_ccw fn)
 {
-    return rotate_ccw_.add(std::move(fn));
+    return on_rotate(
+        [fn_ = std::move(fn)](encoder_step step)
+        { if(step == ccw) fn_(); }
+    );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool encoder::remove_call(cid id)
 {
-    return rotate_.remove(id)
-        || rotate_cw_.remove(id)
-        || rotate_ccw_.remove(id);
+    return rotate_.remove(id);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void encoder::reset()
-{
-    if(pin1_)
-    {
-        pin1_->remove(id_);
-        pin1_ = nullptr;
-    }
-    pin2_ = nullptr;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void encoder::set_callback()
+void encoder::set_call()
 {
     if(pin1_) id_ = pin1_->on_state_changed([=](gpio::state state)
     {
@@ -90,13 +85,7 @@ void encoder::set_callback()
             if((state_ = state))
             {
                 auto step = pin2_->state() ? cw : ccw;
-                if(step == step_)
-                {
-                    rotate_(step);
-
-                         if(step == cw) rotate_cw_();
-                    else if(step == ccw) rotate_ccw_();
-                }
+                if(step == step_) rotate_(step);
 
                 step_ = nos;
             }
@@ -106,13 +95,15 @@ void encoder::set_callback()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void encoder::move_and_reset(encoder& rhs)
+void encoder::reset_call()
 {
-    rotate_ = std::move(rhs.rotate_);
-    rotate_cw_ = std::move(rhs.rotate_cw_);
-    rotate_ccw_ = std::move(rhs.rotate_ccw_);
-
-    rhs.reset();
+    if(pin1_)
+    {
+        pin1_->remove(id_);
+        id_ = ncid;
+        pin1_ = nullptr;
+    }
+    pin2_ = nullptr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

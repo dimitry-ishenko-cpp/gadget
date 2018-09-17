@@ -45,7 +45,7 @@ public:
 protected:
     ////////////////////
     gpio::pin* pin1_;
-    gpio::cid id_;
+    gpio::cid id_ = ncid;
 
     gpio::pin* pin2_;
     gpio::state state_ = off;
@@ -54,13 +54,10 @@ protected:
     encoder_step step_ = nos;
 
     call_chain<fn_rotate> rotate_;
-    call_chain<fn_rotate_cw> rotate_cw_;
-    call_chain<fn_rotate_ccw> rotate_ccw_;
 
     ////////////////////
-    void reset();
-    void set_callback();
-    void move_and_reset(encoder&);
+    void set_call();
+    void reset_call();
 };
 
 ////////////////////////////////////////////////////////////////////////////////
