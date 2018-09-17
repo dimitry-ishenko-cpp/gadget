@@ -26,7 +26,7 @@ class multi_tap
 {
 public:
     ////////////////////
-    multi_tap(asio::io_service&);
+    explicit multi_tap(asio::io_service&);
 
     multi_tap(multi_tap&&);
     multi_tap& operator=(multi_tap&&);
