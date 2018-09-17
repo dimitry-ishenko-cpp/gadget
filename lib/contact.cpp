@@ -14,7 +14,7 @@ namespace gadget
 
 ////////////////////////////////////////////////////////////////////////////////
 contact::contact(asio::io_service& io, gpio::pin* pin) :
-    pin_(pin), timer_(io)
+    multi_tap(io), pin_(pin), timer_(io)
 {
     set_call();
 }
@@ -24,6 +24,7 @@ contact::~contact() { reset_call(); }
 
 ////////////////////////////////////////////////////////////////////////////////
 contact::contact(contact&& rhs) :
+    multi_tap(std::move(rhs)),
     pin_(rhs.pin_), time_(rhs.time_), timer_(rhs.timer_.get_io_service()),
     state_changed_(std::move(rhs.state_changed_))
 {
@@ -36,7 +37,8 @@ contact& contact::operator=(contact&& rhs)
 {
     reset_call();
 
-    pin_ = rhs.pin_; state_ = nos; time_ = rhs.time_;
+    multi_tap::operator=(std::move(rhs));
+    pin_ = rhs.pin_; state_ = off; time_ = rhs.time_;
     state_changed_ = std::move(rhs.state_changed_);
     set_call();
 
@@ -57,7 +59,6 @@ cid contact::on_press(fn_press fn)
         [fn_ = std::move(fn)](contact_state state)
         { if(state == pressed) fn_(); }
     );
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -85,11 +86,11 @@ void contact::set_call()
         {
             if(ec) return;
 
-            auto new_state = to_contact_state(state);
-            if(new_state != state_)
+            if(state != state_)
             {
-                state_ = new_state;
-                state_changed_(state_);
+                state_ = state;
+                state_changed_(state_ == off ? pressed : released);
+                multi_tap::operator()(state_);
             }
         });
     });

@@ -9,6 +9,7 @@
 #define GADGET_CONTACT_HPP
 
 ////////////////////////////////////////////////////////////////////////////////
+#include <gadget++/multi_tap.hpp>
 #include <gadget++/types.hpp>
 #include <gadget++/unique_function.hpp>
 #include <gpio++/pin.hpp>
@@ -23,7 +24,7 @@ namespace gadget
 {
 
 ////////////////////////////////////////////////////////////////////////////////
-class contact
+class contact : protected multi_tap
 {
 public:
     ////////////////////
@@ -34,7 +35,7 @@ public:
     contact& operator=(contact&&);
 
     ////////////////////
-    auto state() { return to_contact_state(pin_->state()); }
+    auto state() { return pin_->state() == off ? pressed : released; }
 
     bool is_pressed() { return state() == pressed; }
     bool is_released() { return state() == released; }
@@ -55,6 +56,22 @@ public:
     cid on_press(fn_press);
     cid on_release(fn_release);
 
+    ////////////////////
+    using multi_tap::tap_time;
+    using multi_tap::hold_time;
+
+    using multi_tap::fn_tap;
+
+    using multi_tap::on_tap_once;
+    using multi_tap::on_tap_once_hold;
+
+    using multi_tap::on_tap_twice;
+    using multi_tap::on_tap_twice_hold;
+
+    using multi_tap::on_tap_thrice;
+    using multi_tap::on_tap_thrice_hold;
+
+    ////////////////////
     bool remove_call(cid);
 
 protected:
@@ -62,8 +79,7 @@ protected:
     gpio::pin* pin_;
     gpio::cid id_ = ncid;
 
-    static constexpr auto nos = static_cast<contact_state>(-1);
-    contact_state state_ = nos;
+    gpio::state state_ = off;
 
     nsec time_ = 10ms;
     asio::system_timer timer_;
@@ -71,9 +87,6 @@ protected:
     call_chain<fn_state_changed> state_changed_;
 
     ////////////////////
-    static contact_state to_contact_state(gpio::state state)
-    { return state == off ? pressed : released; }
-
     void set_call();
     void reset_call();
 };
