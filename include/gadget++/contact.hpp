@@ -60,7 +60,7 @@ public:
 protected:
     ////////////////////
     gpio::pin* pin_;
-    gpio::cid id_;
+    gpio::cid id_ = ncid;
 
     static constexpr auto nos = static_cast<contact_state>(-1);
     contact_state state_ = nos;
@@ -69,16 +69,13 @@ protected:
     asio::system_timer timer_;
 
     call_chain<fn_state_changed> state_changed_;
-    call_chain<fn_press> press_;
-    call_chain<fn_release> release_;
 
     ////////////////////
     static contact_state to_contact_state(gpio::state state)
     { return state == off ? pressed : released; }
 
-    void set_callback();
-    void reset();
-    void move_and_reset(contact&);
+    void set_call();
+    void reset_call();
 };
 
 ////////////////////////////////////////////////////////////////////////////////
