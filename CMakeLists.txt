@@ -17,7 +17,6 @@ set(HEADERS
     include/gadget++/rgb_led.hpp
     include/gadget++/temp.hpp
     include/gadget++/types.hpp
-    include/gadget++/unique_function.hpp
 )
 set(SOURCES
     lib/contact.cpp
