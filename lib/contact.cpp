@@ -6,6 +6,8 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 #include <gadget++/contact.hpp>
+
+#include <stdexcept>
 #include <utility>
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -16,34 +18,47 @@ namespace gadget
 contact::contact(asio::io_service& io, gpio::pin* pin) :
     multi_tap(io), pin_(pin), timer_(io)
 {
-    set_call();
+    if(pin_) set_call();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-contact::~contact() { reset_call(); }
+contact::~contact() { reset(); }
 
 ////////////////////////////////////////////////////////////////////////////////
 contact::contact(contact&& rhs) :
     multi_tap(std::move(rhs)),
-    pin_(rhs.pin_), time_(rhs.time_), timer_(rhs.timer_.get_io_service()),
+    pin_(rhs.pin_),
+    time_(rhs.time_),
+    timer_(rhs.timer_.get_io_service()),
     state_changed_(std::move(rhs.state_changed_))
 {
-    set_call();
-    rhs.reset_call();
+    if(pin_) set_call();
+    rhs.reset();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 contact& contact::operator=(contact&& rhs)
 {
-    reset_call();
+    reset();
 
     multi_tap::operator=(std::move(rhs));
-    pin_ = rhs.pin_; state_ = off; time_ = rhs.time_;
+    pin_ = rhs.pin_;
+    state_ = off;
+    time_ = rhs.time_;
     state_changed_ = std::move(rhs.state_changed_);
-    set_call();
+    if(pin_) set_call();
 
-    rhs.reset_call();
+    rhs.reset();
     return *this;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+contact_state contact::state()
+{
+    if(!pin_) throw std::logic_error(
+        "contact: Cannot get state - empty instance"
+    );
+    return pin_->state() == off ? pressed : released;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -79,7 +94,7 @@ bool contact::remove_call(cid id)
 ////////////////////////////////////////////////////////////////////////////////
 void contact::set_call()
 {
-    if(pin_) id_ = pin_->on_state_changed([=](gpio::state state)
+    id_ = pin_->on_state_changed([=](gpio::state state)
     {
         timer_.expires_from_now(time_);
         timer_.async_wait([=](const asio::error_code& ec)
@@ -90,14 +105,14 @@ void contact::set_call()
             {
                 state_ = state;
                 state_changed_(state_ == off ? pressed : released);
-                multi_tap::operator()(state_);
+                multi_tap::state_changed(state_);
             }
         });
     });
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void contact::reset_call()
+void contact::reset()
 {
     asio::error_code ec;
     timer_.cancel(ec);

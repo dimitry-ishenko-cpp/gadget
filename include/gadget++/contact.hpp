@@ -23,7 +23,7 @@ namespace gadget
 {
 
 ////////////////////////////////////////////////////////////////////////////////
-class contact : protected multi_tap
+class contact : public multi_tap
 {
 public:
     ////////////////////
@@ -34,7 +34,7 @@ public:
     contact& operator=(contact&&);
 
     ////////////////////
-    auto state() { return pin_->state() == off ? pressed : released; }
+    contact_state state();
 
     bool is_pressed() { return state() == pressed; }
     bool is_released() { return state() == released; }
@@ -55,22 +55,11 @@ public:
     cid on_press(fn_press);
     cid on_release(fn_release);
 
+    bool remove_call(cid);
+
     ////////////////////
     using multi_tap::tap_time;
     using multi_tap::hold_time;
-
-    using multi_tap::fn_tap;
-
-    using multi_tap::on_tap;
-    using multi_tap::on_tap_2;
-    using multi_tap::on_tap_3;
-
-    using multi_tap::on_hold;
-    using multi_tap::on_tap_hold;
-    using multi_tap::on_tap_2_hold;
-
-    ////////////////////
-    bool remove_call(cid);
 
 protected:
     ////////////////////
@@ -86,7 +75,7 @@ protected:
 
     ////////////////////
     void set_call();
-    void reset_call();
+    void reset();
 };
 
 ////////////////////////////////////////////////////////////////////////////////
