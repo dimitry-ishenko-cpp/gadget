@@ -49,20 +49,19 @@ public:
     ////////////////////
     using fn_tap = std::function<void()>;
 
-    cid on_tap_once(fn_tap);
-    cid on_tap_once_hold(fn_tap);
+    cid on_tap(fn_tap);
+    cid on_tap_2(fn_tap);
+    cid on_tap_3(fn_tap);
 
-    cid on_tap_twice(fn_tap);
-    cid on_tap_twice_hold(fn_tap);
-
-    cid on_tap_thrice(fn_tap);
-    cid on_tap_thrice_hold(fn_tap);
+    cid on_hold(fn_tap);
+    cid on_tap_hold(fn_tap);
+    cid on_tap_2_hold(fn_tap);
 
 protected:
     ////////////////////
     asio::system_timer tap_timer_, hold_timer_;
     nsec tap_time_ = 250ms, hold_time_ = 1200ms;
-    int taps_ = 0;
+    int press_ = 0;
     bool holding_ = false;
 
     using fn_tap_ = std::function<void(int)>;

@@ -61,14 +61,13 @@ public:
 
     using multi_tap::fn_tap;
 
-    using multi_tap::on_tap_once;
-    using multi_tap::on_tap_once_hold;
+    using multi_tap::on_tap;
+    using multi_tap::on_tap_2;
+    using multi_tap::on_tap_3;
 
-    using multi_tap::on_tap_twice;
-    using multi_tap::on_tap_twice_hold;
-
-    using multi_tap::on_tap_thrice;
-    using multi_tap::on_tap_thrice_hold;
+    using multi_tap::on_hold;
+    using multi_tap::on_tap_hold;
+    using multi_tap::on_tap_2_hold;
 
     ////////////////////
     bool remove_call(cid);
