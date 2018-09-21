@@ -31,32 +31,32 @@ rgb_led::rgb_led(gpio::pin* red, gpio::pin* green, gpio::pin* blue) :
 ////////////////////////////////////////////////////////////////////////////////
 void rgb_led::set(const gadget::color& color)
 {
-    color_.red = clamp(color.red);
+    color_.red   = clamp(color.red  );
     color_.green = clamp(color.green);
-    color_.blue = clamp(color.blue);
-    update();
+    color_.blue  = clamp(color.blue );
+    sync_state();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void rgb_led::turn(gadget::state state)
 {
-    pc_ = state == gadget::off ? 0_pc : 100_pc;
-    update();
+    pc_ = state == gadget::on ? 100_pc : 0_pc;
+    sync_state();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void rgb_led::dim(percent pc)
 {
     pc_ = clamp(pc);
-    update();
+    sync_state();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void rgb_led::update()
+void rgb_led::sync_state()
 {
-    red_.dim(color_.red * pc_);
-    green_.dim(color_.green * pc_);
-    blue_.dim(color_.blue * pc_);
+      red_.dim(color_.red   * pc_ / 100_pc);
+    green_.dim(color_.green * pc_ / 100_pc);
+     blue_.dim(color_.blue  * pc_ / 100_pc);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

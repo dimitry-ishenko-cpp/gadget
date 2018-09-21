@@ -45,7 +45,7 @@ protected:
     gadget::color color_ = white;
     percent pc_ = 100_pc;
 
-    void update();
+    void sync_state();
 };
 
 ////////////////////////////////////////////////////////////////////////////////
