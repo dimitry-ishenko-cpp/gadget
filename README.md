@@ -12,7 +12,7 @@ Currently implemented gadgets are:
 ### Prerequisites
 
 * [asio C++ Library](https://think-async.com/) >= 1.10.10
-* [C++ GPIO Library for Linux](https://github.com/dimitry-ishenko-cpp/gpio) >= 1.0
+* [C++ GPIO Library for Linux](https://github.com/dimitry-ishenko-cpp/gpio) >= 2.0
 * CMake >= 3.1
 
 ### Installation
