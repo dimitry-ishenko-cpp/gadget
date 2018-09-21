@@ -44,8 +44,6 @@ public:
     }
     auto hold_time() const noexcept { return hold_time_; }
 
-    void operator()(gpio::state);
-
     ////////////////////
     using fn_tap = std::function<void()>;
 
@@ -59,16 +57,22 @@ public:
 
 protected:
     ////////////////////
-    asio::system_timer tap_timer_, hold_timer_;
-    nsec tap_time_ = 250ms, hold_time_ = 1200ms;
-    int press_ = 0;
-    bool holding_ = false;
+    asio::system_timer tap_timer_;
+    nsec tap_time_ = 250ms;
 
     using fn_tap_ = std::function<void(int)>;
-    using fn_hold_ = std::function<void(int)>;
-
     call_chain<fn_tap_> tap_;
+
+    asio::system_timer hold_timer_;
+    nsec hold_time_ = 1200ms;
+
+    using fn_hold_ = std::function<void(int)>;
     call_chain<fn_hold_> hold_;
+
+    void state_changed(gpio::state);
+
+    int press_ = 0;
+    bool holding_ = false;
 
     ////////////////////
     void reset();
