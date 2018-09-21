@@ -16,32 +16,35 @@ namespace gadget
 encoder::encoder(gpio::pin* pin1, gpio::pin* pin2) :
     pin1_(pin1), pin2_(pin2)
 {
-    set_call();
+    if(pin1_ && pin2_) set_call();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-encoder::~encoder() { pin1_->remove(id_); }
+encoder::~encoder() { reset(); }
 
 ////////////////////////////////////////////////////////////////////////////////
 encoder::encoder(encoder&& rhs) :
-    pin1_(rhs.pin1_), pin2_(rhs.pin2_),
+    pin1_(rhs.pin1_),
+    pin2_(rhs.pin2_),
     rotate_(std::move(rhs.rotate_))
 {
-    set_call();
-    rhs.reset_call();
+    if(pin1_ && pin2_) set_call();
+    rhs.reset();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 encoder& encoder::operator=(encoder&& rhs)
 {
-    reset_call();
+    reset();
 
-    pin1_ = rhs.pin1_; pin2_ = rhs.pin2_;
-    state_ = off; step_ = nos;
+    pin1_ = rhs.pin1_;
+    pin2_ = rhs.pin2_;
+    state_ = off;
+    step_ = nos;
     rotate_ = std::move(rhs.rotate_);
-    set_call();
+    if(pin1_ && pin2_) set_call();
 
-    rhs.reset_call();
+    rhs.reset();
     return *this;
 }
 
@@ -78,7 +81,7 @@ bool encoder::remove_call(cid id)
 ////////////////////////////////////////////////////////////////////////////////
 void encoder::set_call()
 {
-    if(pin1_) id_ = pin1_->on_state_changed([=](gpio::state state)
+    id_ = pin1_->on_state_changed([=](gpio::state state)
     {
         if(state != state_)
         {
@@ -95,7 +98,7 @@ void encoder::set_call()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void encoder::reset_call()
+void encoder::reset()
 {
     if(pin1_)
     {
