@@ -23,24 +23,20 @@ class led
 {
 public:
     ////////////////////
-    led(gpio::pin* pin) : pin_(pin) { }
+    led(gpio::pin*);
 
-    led(led&& rhs) noexcept : pin_(rhs.pin_) { rhs.pin_ = nullptr; }
-    led& operator=(led&& rhs) noexcept
-    {
-        pin_ = rhs.pin_; rhs.pin_ = nullptr;
-        return *this;
-    }
+    led(led&&) noexcept;
+    led& operator=(led&&) noexcept;
 
     ////////////////////
-    void turn(state s) { pin_->set(s); }
-    auto state() { return pin_->state(); }
+    void turn(gadget::state);
+    gadget::state state();
 
     void on() { turn(gadget::on); }
     void off() { turn(gadget::off); }
 
-    void dim(percent pc) { pin_->duty_cycle(pc); }
-    auto level() const noexcept { return pin_->duty_cycle(); }
+    void dim(percent);
+    percent level() const;
 
 protected:
     ////////////////////

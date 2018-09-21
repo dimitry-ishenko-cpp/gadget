@@ -21,6 +21,7 @@ set(HEADERS
 set(SOURCES
     lib/contact.cpp
     lib/encoder.cpp
+    lib/led.cpp
     lib/multi_tap.cpp
     lib/rgb_led.cpp
     lib/temp.cpp
