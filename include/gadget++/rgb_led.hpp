@@ -27,7 +27,7 @@ public:
     rgb_led& operator=(rgb_led&&) = default;
 
     ////////////////////
-    void set(const gadget::color&);
+    void color(const gadget::color&);
     const auto& color() const noexcept { return color_; }
 
     void turn(state);

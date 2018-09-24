@@ -29,7 +29,7 @@ rgb_led::rgb_led(gpio::pin* red, gpio::pin* green, gpio::pin* blue) :
 { }
 
 ////////////////////////////////////////////////////////////////////////////////
-void rgb_led::set(const gadget::color& color)
+void rgb_led::color(const gadget::color& color)
 {
     color_.red   = clamp(color.red  );
     color_.green = clamp(color.green);
