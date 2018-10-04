@@ -6,6 +6,7 @@ Currently implemented gadgets are:
 * gadget::contact - push button, switch, etc.
 * gadget::encoder - rotary encoder
 * gadget::led - single color LED
+* gadget::rgb_led - RGB LED
 
 ## Getting Started
 
