@@ -49,13 +49,13 @@ cid multi_tap::on_tap(fn_tap fn)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-cid multi_tap::on_tap_2(fn_tap fn)
+cid multi_tap::on_tap_twice(fn_tap fn)
 {
     return tap_.add([fn_ = std::move(fn)](int press){ if(press == 2) fn_(); });
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-cid multi_tap::on_tap_3(fn_tap fn)
+cid multi_tap::on_tap_3x(fn_tap fn)
 {
     return tap_.add([fn_ = std::move(fn)](int press){ if(press == 3) fn_(); });
 }
@@ -73,7 +73,7 @@ cid multi_tap::on_tap_hold(fn_tap fn)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-cid multi_tap::on_tap_2_hold(fn_tap fn)
+cid multi_tap::on_tap_twice_hold(fn_tap fn)
 {
     return hold_.add([fn_ = std::move(fn)](int press){ if(press == 3) fn_(); });
 }

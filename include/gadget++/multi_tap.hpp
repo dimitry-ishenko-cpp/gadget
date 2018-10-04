@@ -48,12 +48,12 @@ public:
     using fn_tap = std::function<void()>;
 
     cid on_tap(fn_tap);
-    cid on_tap_2(fn_tap);
-    cid on_tap_3(fn_tap);
+    cid on_tap_twice(fn_tap);
+    cid on_tap_3x(fn_tap);
 
     cid on_hold(fn_tap);
     cid on_tap_hold(fn_tap);
-    cid on_tap_2_hold(fn_tap);
+    cid on_tap_twice_hold(fn_tap);
 
 protected:
     ////////////////////
