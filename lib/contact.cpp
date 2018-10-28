@@ -15,7 +15,14 @@ namespace gadget
 {
 
 ////////////////////////////////////////////////////////////////////////////////
-contact::contact(asio::io_service& io, gpio::pin* pin) :
+contact::contact(asio::io_service& io, gpio::pin* pin, flag flags) :
+    contact(io, pin, adopt_pin)
+{
+    if(pin_) pin_->mode(in, flags);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+contact::contact(asio::io_service& io, gpio::pin* pin, adopt_pin_t) :
     multi_tap(io), pin_(pin), timer_(io)
 {
     if(pin_) set_call();

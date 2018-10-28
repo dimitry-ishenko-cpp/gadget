@@ -27,7 +27,8 @@ class contact : public multi_tap
 {
 public:
     ////////////////////
-    contact(asio::io_service&, gpio::pin*);
+    contact(asio::io_service&, gpio::pin*, gpio::flag flags = { });
+    contact(asio::io_service&, gpio::pin*, adopt_pin_t);
    ~contact();
 
     contact(contact&&);
