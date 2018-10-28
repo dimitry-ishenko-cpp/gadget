@@ -13,7 +13,15 @@ namespace gadget
 {
 
 ////////////////////////////////////////////////////////////////////////////////
-encoder::encoder(gpio::pin* pin1, gpio::pin* pin2) :
+encoder::encoder(gpio::pin* pin1, gpio::pin* pin2, flag flags) :
+    encoder(pin1, pin2, adopt_pin)
+{
+    if(pin1_) pin1_->mode(in, flags);
+    if(pin2_) pin2_->mode(in, flags);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+encoder::encoder(gpio::pin* pin1, gpio::pin* pin2, adopt_pin_t) :
     pin1_(pin1), pin2_(pin2)
 {
     if(pin1_ && pin2_) set_call();

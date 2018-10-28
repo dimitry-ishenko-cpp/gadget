@@ -24,7 +24,8 @@ class encoder
 {
 public:
     ////////////////////
-    encoder(gpio::pin*, gpio::pin*);
+    encoder(gpio::pin*, gpio::pin*, gpio::flag flags = { });
+    encoder(gpio::pin*, gpio::pin*, adopt_pin_t);
    ~encoder();
 
     encoder(encoder&&);
