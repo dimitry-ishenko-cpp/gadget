@@ -21,7 +21,8 @@ class rgb_led
 {
 public:
     ////////////////////
-    rgb_led(gpio::pin* red, gpio::pin* green, gpio::pin* blue);
+    rgb_led(gpio::pin* red, gpio::pin* green, gpio::pin* blue, gpio::flag flags = { });
+    rgb_led(gpio::pin* red, gpio::pin* green, gpio::pin* blue, adopt_pin_t);
 
     rgb_led(rgb_led&&) = default;
     rgb_led& operator=(rgb_led&&) = default;
