@@ -23,7 +23,8 @@ class led
 {
 public:
     ////////////////////
-    led(gpio::pin*);
+    explicit led(gpio::pin*, gpio::flag flags = { });
+    led(gpio::pin*, adopt_pin_t);
 
     led(led&&) noexcept;
     led& operator=(led&&) noexcept;

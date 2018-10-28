@@ -15,7 +15,18 @@ namespace gadget
 {
 
 ////////////////////////////////////////////////////////////////////////////////
-led::led(pin* pin) : pin_(pin) { }
+led::led(pin* pin, flag flags) :
+    led(pin, adopt_pin)
+{
+    if(pin_)
+    {
+        pin_->mode(out, flags);
+        pin_->period(10ms);
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+led::led(pin* pin, adopt_pin_t) : pin_(pin) { }
 
 ////////////////////////////////////////////////////////////////////////////////
 led::led(led&& rhs) noexcept : pin_(rhs.pin_) { rhs.pin_ = nullptr; }
