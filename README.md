@@ -20,7 +20,7 @@ Currently implemented gadgets are:
 
 Binary (Debian/Ubuntu/etc):
 ```console
-$ version=1.0
+$ version=2.0
 $ arch=$(uname -p)
 $ wget https://github.com/dimitry-ishenko-cpp/gadget/releases/download/v${version}/gadget++_${version}_Linux_${arch}.deb
 $ sudo apt install ./gadget++_${version}_Linux_${arch}.deb
@@ -28,7 +28,7 @@ $ sudo apt install ./gadget++_${version}_Linux_${arch}.deb
 
 Compile from source:
 ```console
-$ version=1.0
+$ version=2.0
 $ wget https://github.com/dimitry-ishenko-cpp/gadget/releases/download/v${version}/gadget++-${version}-Source.tar.bz2
 $ tar xjf gadget++-${version}-Source.tar.bz2
 $ mkdir gadget++-${version}-Source/build
