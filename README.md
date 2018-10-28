@@ -13,7 +13,7 @@ Currently implemented gadgets are:
 ### Prerequisites
 
 * [asio C++ Library](https://think-async.com/) >= 1.10.10
-* [C++ GPIO Library for Linux](https://github.com/dimitry-ishenko-cpp/gpio) >= 2.0
+* [C++ GPIO Library for Linux](https://github.com/dimitry-ishenko-cpp/gpio) >= 4.0
 * CMake >= 3.1
 
 ### Installation
@@ -56,7 +56,7 @@ Example:
 #include <gadget++/encoder.hpp>
 #include <gadget++/rgb_led.hpp>
 #include <gadget++/temp.hpp>
-#include <gpio++/gpio.hpp>
+#include <gpio++.hpp>
 
 #include <asio.hpp>
 
@@ -71,23 +71,16 @@ using std::cout; using std::endl;
 int main()
 {
     asio::io_service io;
-    auto chip = gpio::get_chip(io, "chip:0");
+    auto chip = gpio::get_chip(io);
 
     // optical encoder
-    gadget::encoder encoder(
-        chip->pin(5)->as(in),
-        chip->pin(6)->as(in)
-    );
+    gadget::encoder encoder(chip->pin(5), chip->pin(6), pull_up);
 
     // push button
-    gadget::contact button(io, chip->pin(7)->as(in));
+    gadget::contact button(io, chip->pin(7), pull_up);
 
     // rgb led
-    gadget::rgb_led led(
-        chip->pin(14)->as(out), // red
-        chip->pin(15)->as(out), // green
-        chip->pin(16)->as(out)  // blue
-    );
+    gadget::rgb_led led(chip->pin(14), chip->pin(15), chip->pin(16));
 
     // initial color temp and level
     gadget::temp temp = 3200_K;
@@ -158,7 +151,7 @@ int main()
 
 Compile and run:
 ```console
-$ g++ example.cpp -o example -DASIO_STANDALONE -lgadget++ -lgpio++ -ldl
+$ g++ example.cpp -o example -DASIO_STANDALONE -lgadget++ -lgpio++-pigpio -lpigpio
 $ ./example
 ```
 
