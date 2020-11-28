@@ -33,11 +33,13 @@ set(FILES LICENSE.md README.md)
 add_library(gadget++ SHARED ${HEADERS} ${SOURCES})
 
 # install
-install(TARGETS gadget++ DESTINATION lib)
+include(GNUInstallDirs)
+
+install(TARGETS gadget++ DESTINATION ${CMAKE_INSTALL_LIBDIR})
 set_target_properties(gadget++ PROPERTIES VERSION ${PROJECT_VERSION})
 set_target_properties(gadget++ PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR})
-install(DIRECTORY include/ DESTINATION include)
-install(FILES ${FILES} DESTINATION share/doc/${PROJECT_NAME})
+install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(FILES ${FILES} DESTINATION ${CMAKE_INSTALL_DOCDIR})
 
 ########################
 # package
